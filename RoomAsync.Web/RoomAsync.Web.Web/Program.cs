@@ -1,8 +1,22 @@
+
+using CompositionRoot;
 using RoomAsync.Web.Web;
 using RoomAsync.Web.Web.Components;
-
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure Serilog
+//SerilogConfiguration.Configure(builder);
+
+// Add services
+
+
+var connectionString = "Server=localhost;Database=RoomAsync;TrustServerCertificate=True;Integrated Security=True;";
+var loggingDb = "Server=localhost;Database=RoomAsync_LogLocalhost;TrustServerCertificate=True;Integrated Security=True;";
+
+
+//builder.Services.AddPrometheusExporter(".NET9");
+builder.Services.AddInfrastructure(connectionString, loggingDb, ".NET9");
+builder.Services.AddOAuth(".NET9");
 // Add service defaults & Aspire client integrations.
 builder.AddServiceDefaults();
 builder.AddRedisOutputCache("cache");
@@ -26,6 +40,11 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseMiddleware<SessionMiddleware>();
 
 app.UseHttpsRedirection();
 
