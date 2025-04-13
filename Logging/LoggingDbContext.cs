@@ -14,11 +14,12 @@ namespace Logging
                 entity.ToTable(nameof(Logs));
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Timestamp).IsRequired();
-                entity.Property(e => e.LogLevel).HasMaxLength(50).IsRequired();
+                entity.Property(e => e.Level).HasMaxLength(128).IsRequired();
                 entity.Property(e => e.Message).IsRequired();
+                entity.Property(e => e.MessageTemplate).IsRequired();
                 entity.Property(e => e.Exception).IsRequired(false);
                 entity.Property(e => e.CorrelationId).HasMaxLength(50).IsRequired(false);
-                entity.Property(e => e.Context).IsRequired(false);
+                entity.Property(e => e.Properties).IsRequired(false);
             });
         }
     }
@@ -26,11 +27,12 @@ namespace Logging
     public class LogEntry
     {
         public int Id { get; set; }
-        public DateTime Timestamp { get; set; }
-        public string? LogLevel { get; set; }
         public string? Message { get; set; }
+        public string? MessageTemplate { get; set; }
+        public string? Level { get; set; }
+        public DateTime Timestamp { get; set; }
         public string? Exception { get; set; }
         public string? CorrelationId { get; set; }
-        public string? Context { get; set; }
+        public string? Properties { get; set; }
     }
 }

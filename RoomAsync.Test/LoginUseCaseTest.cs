@@ -1,27 +1,26 @@
 ﻿using Domain;
 using Domain.Session;
 using Domain.User.UseCases;
-using NSubstitute;
 
 namespace RoomAsync.Test
 {
-    public class LoginUseCaseTests
+    public class LoginUseCaseTests : IClassFixture<TestFixture>
     {
-        private readonly IOAuthAdapter _mockAdapter;
+        private readonly IOAuthAdapter _oAuthAdapter;
         private readonly LoginUseCase _loginUseCase;
 
-        public LoginUseCaseTests()
+        public LoginUseCaseTests(TestFixture fixture)
         {
-            _mockAdapter = Substitute.For<IOAuthAdapter>();
-            _loginUseCase = new LoginUseCase(_mockAdapter);
+            _oAuthAdapter = fixture.ServiceProvider.GetRequiredService<IOAuthAdapter>();
+            _loginUseCase = new LoginUseCase(_oAuthAdapter);
         }
 
         [Fact]
         public async Task Login_ValidCredentials_ShouldReturnSessionId()
         {
             // Arrange
-            var username = "testuser";
-            var password = "password";
+            var username = "Admin";
+            var password = "Admin";
             var expectedSessionId = "session-id";
 
             var userInfo = new UserInfo
@@ -35,10 +34,8 @@ namespace RoomAsync.Test
                 Claims = "claim1,claim2"
             };
 
-            var _mockAdapter = Substitute.For<IOAuthAdapter>();
-
-            _mockAdapter.AuthenticateAsync(username, password).Returns("access-token");
-            _mockAdapter.CreateSessionAsync("access-token").Returns(new Session(userInfo));
+            await _oAuthAdapter.AuthenticateAsync(username, password);
+            await _oAuthAdapter.CreateSessionAsync("access-token");
 
 
             // Act

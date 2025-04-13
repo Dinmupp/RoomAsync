@@ -4,6 +4,7 @@
     {
         private readonly string _username;
 
+        public string Username => _username;
         public GetByNameSpec(string username)
         {
             _username = username;
