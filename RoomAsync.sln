@@ -35,7 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metric", "Metric", "{79CED7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prometheus.Middleware", "Prometheus.Middleware\Prometheus.Middleware.csproj", "{5DE19AF5-D3CA-4043-9CC5-4043931AA327}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAuthAdapter", "OAuthAdapter\OAuthAdapter.csproj", "{6F5EC47D-E964-43ED-AC51-F9A3A1FE2F68}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyCloakOAuthAdapter", "OAuthAdapter\KeyCloakOAuthAdapter.csproj", "{6F5EC47D-E964-43ED-AC51-F9A3A1FE2F68}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CorrelationIdMiddleware", "CorrelationIdMiddleware\CorrelationIdMiddleware.csproj", "{00017424-30D2-4745-84A2-F8FCA5DBCCB0}"
 EndProject

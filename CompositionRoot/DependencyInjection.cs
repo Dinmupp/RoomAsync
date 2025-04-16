@@ -5,6 +5,7 @@ using Domain.Session.Driven;
 using Domain.User.Driven;
 using Domain.User.Driver;
 using Domain.User.UseCases;
+using KeyCloakOAuthAdapter;
 using Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -71,8 +72,8 @@ namespace CompositionRoot
         {
 #if NET9_0
             services.Configure<OAuthConfig>(oAuthConfig);
-            services.AddScoped<IOAuthAdapter, OAuthAdapter.OAuthAdapter>();
-            services.AddHttpClient<IOAuthAdapter, OAuthAdapter.OAuthAdapter>();
+            services.AddScoped<IOAuthAdapter, OAuthKeycloakAdapter>();
+            services.AddHttpClient<IOAuthAdapter, OAuthKeycloakAdapter>();
             services.AddScoped<LoginUseCase>();
 #endif
 

@@ -4,14 +4,14 @@ using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
-namespace OAuthAdapter
+namespace KeyCloakOAuthAdapter
 {
-    public class OAuthAdapter : IOAuthAdapter
+    public class OAuthKeycloakAdapter : IOAuthAdapter
     {
         private readonly OAuthConfig _config;
         private readonly HttpClient _httpClient;
 
-        public OAuthAdapter(IOptions<OAuthConfig> config, HttpClient httpClient)
+        public OAuthKeycloakAdapter(IOptions<OAuthConfig> config, HttpClient httpClient)
         {
             _config = config.Value;
             _httpClient = httpClient;

@@ -1,18 +1,33 @@
-﻿using Domain;
-using Domain.Session;
-using Domain.User.UseCases;
+﻿using Domain.Session;
+using Domain.User.Driver;
+using Testcontainers.Keycloak;
 
 namespace RoomAsync.Test
 {
-    public class LoginUseCaseTests : IClassFixture<TestFixture>
+    public class LoginUseCaseTests : IClassFixture<TestFixture>, IAsyncLifetime
     {
-        private readonly IOAuthAdapter _oAuthAdapter;
-        private readonly LoginUseCase _loginUseCase;
+        private readonly IUserDriverPort _userDriver;
+        private readonly KeycloakContainer _keycloakContainer;
 
-        public LoginUseCaseTests(TestFixture fixture)
+        public LoginUseCaseTests(TestFixture testFixture)
         {
-            _oAuthAdapter = fixture.ServiceProvider.GetRequiredService<IOAuthAdapter>();
-            _loginUseCase = new LoginUseCase(_oAuthAdapter);
+            _keycloakContainer = new KeycloakBuilder()
+               .WithPortBinding(8080, true)
+               .WithPassword("admin")
+               .WithUsername("admin")
+               .Build();
+            _userDriver = testFixture.ServiceProvider.GetRequiredService<IUserDriverPort>();
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await _keycloakContainer.DisposeAsync();
+        }
+
+        public async ValueTask InitializeAsync()
+        {
+            await _keycloakContainer.StartAsync();
+
         }
 
         [Fact]
@@ -34,15 +49,10 @@ namespace RoomAsync.Test
                 Claims = "claim1,claim2"
             };
 
-            await _oAuthAdapter.AuthenticateAsync(username, password);
-            await _oAuthAdapter.CreateSessionAsync("access-token");
-
-
-            // Act
-            var sessionId = await _loginUseCase.ExecuteAsync(username, password);
+            var accessToken = await _userDriver.LoginUserAsync(username, password, CancellationToken.None);
 
             // Assert
-            Assert.Equal(expectedSessionId, sessionId);
+            Assert.Equal(expectedSessionId, accessToken);
         }
     }
 

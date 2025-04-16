@@ -4,7 +4,7 @@ using Domain.User.Specifications;
 
 namespace Domain.User.UseCases
 {
-    public class CreateUserUseCase // DOMAINSERVICE
+    public sealed class CreateUserUseCase // DOMAINSERVICE
     {
         private readonly IUserRepository _userRepository; //DRIVEN
 
