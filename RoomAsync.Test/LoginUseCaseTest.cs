@@ -19,16 +19,11 @@ namespace RoomAsync.Test
             _userDriver = testFixture.ServiceProvider.GetRequiredService<IUserDriverPort>();
         }
 
-        public async ValueTask DisposeAsync()
-        {
+        public async ValueTask DisposeAsync() =>
             await _keycloakContainer.DisposeAsync();
-        }
 
-        public async ValueTask InitializeAsync()
-        {
+        public async ValueTask InitializeAsync() =>
             await _keycloakContainer.StartAsync();
-
-        }
 
         [Fact]
         public async Task Login_ValidCredentials_ShouldReturnSessionId()
