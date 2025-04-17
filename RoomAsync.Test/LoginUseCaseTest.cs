@@ -9,13 +9,20 @@ namespace RoomAsync.Test
         private readonly IUserDriverPort _userDriver;
         private readonly KeycloakContainer _keycloakContainer;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="testFixture"></param>
         public LoginUseCaseTests(TestFixture testFixture)
         {
             _keycloakContainer = new KeycloakBuilder()
-               .WithPortBinding(8080, true)
-               .WithPassword("admin")
-               .WithUsername("admin")
-               .Build();
+                .WithImage("keycloak/keycloak:26.0")
+                .WithExposedPort(8081)
+                .WithPortBinding(8081, 8080)
+                .WithEnvironment("KEYCLOAK_IMPORT", "/opt/keycloak/data/import/import.json")
+                .WithResourceMapping("./Import/import.json", "/opt/keycloak/data/import")
+                .WithCommand("--import-realm")
+                .Build();
             _userDriver = testFixture.ServiceProvider.GetRequiredService<IUserDriverPort>();
         }
 
@@ -29,25 +36,13 @@ namespace RoomAsync.Test
         public async Task Login_ValidCredentials_ShouldReturnSessionId()
         {
             // Arrange
-            var username = "Admin";
-            var password = "Admin";
-            var expectedSessionId = "session-id";
-
-            var userInfo = new UserInfo
-            {
-                SessionId = expectedSessionId,
-                CreatedAt = DateTime.UtcNow,
-                ExpiresAt = DateTime.UtcNow.AddHours(1),
-                UserId = "userId",
-                Username = username,
-                Roles = "role1,role2",
-                Claims = "claim1,claim2"
-            };
+            var username = "myuser";
+            var password = "mypassword";
 
             var accessToken = await _userDriver.LoginUserAsync(username, password, CancellationToken.None);
 
             // Assert
-            Assert.Equal(expectedSessionId, accessToken);
+            Assert.NotNull(accessToken);
         }
     }
 

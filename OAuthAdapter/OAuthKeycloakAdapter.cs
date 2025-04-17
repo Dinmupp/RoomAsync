@@ -19,14 +19,20 @@ namespace KeyCloakOAuthAdapter
 
         public async Task<string> AuthenticateAsync(string username, string password)
         {
-            var response = await _httpClient.PostAsync($"{_config.Authority}{_config.TokenEndpoint}", new FormUrlEncodedContent(new[]
+            var data = new Dictionary<string, string>
+        {
+            { "grant_type", "password" },
+            { "client_id", $"{_config?.ClientId}" },
+            { "username", username },
+            { "password", password }
+        };
+
+            if (_config?.ClientSecret?.Length > 0)
             {
-            new KeyValuePair<string, string>("client_id", _config?.ClientId ?? string.Empty),
-            new KeyValuePair<string, string>("client_secret", _config?.ClientSecret ?? string.Empty),
-            new KeyValuePair<string, string>("grant_type", "password"),
-            new KeyValuePair<string, string>("username", username),
-            new KeyValuePair<string, string>("password", password)
-        }));
+                data.Add("client_secret", _config.ClientSecret);
+            }
+
+            var response = await _httpClient.PostAsync($"{_config?.Authority}{_config?.TokenEndpoint}", new FormUrlEncodedContent(data));
 
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
