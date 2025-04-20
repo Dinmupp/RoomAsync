@@ -1,9 +1,13 @@
+using Domain;
+
 namespace RoomAsync.Web.Web;
 
-public class WeatherApiClient(HttpClient httpClient)
+public class WeatherApiClient(HttpClient httpClient, ILoggerService loggerService)
 {
     public async Task<WeatherForecast[]> GetWeatherAsync(int maxItems = 10, CancellationToken cancellationToken = default)
     {
+        loggerService.SetCorrelationId(Guid.NewGuid().ToString());
+        loggerService.LogInformation("Getting weather data from API");
         List<WeatherForecast>? forecasts = null;
 
         await foreach (var forecast in httpClient.GetFromJsonAsAsyncEnumerable<WeatherForecast>("/weatherforecast", cancellationToken))
