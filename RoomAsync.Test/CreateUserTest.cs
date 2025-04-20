@@ -3,15 +3,17 @@ using Domain.User.Driver;
 
 namespace RoomAsync.Test
 {
-    public class CreateUserTest : IClassFixture<TestFixture>
+    public class CreateUserTest : IAsyncDisposable
     {
+        readonly AsyncServiceScope _scope;
         private readonly IUserDriverPort _userAdapter; //DRIVERORT
         private readonly ILoggerService _loggerService;
 
         public CreateUserTest(TestFixture fixture)
         {
-            _userAdapter = fixture.ServiceProvider.GetRequiredService<IUserDriverPort>();
-            _loggerService = fixture.ServiceProvider.GetRequiredService<ILoggerService>();
+            _scope = fixture.CreateScopeAsync();
+            _userAdapter = _scope.ServiceProvider.GetRequiredService<IUserDriverPort>();
+            _loggerService = _scope.ServiceProvider.GetRequiredService<ILoggerService>();
         }
 
         [Fact]
@@ -26,5 +28,7 @@ namespace RoomAsync.Test
             }, CancellationToken.None);
             Assert.True(test.First().Username == "testuser");
         }
+
+        public ValueTask DisposeAsync() => _scope.DisposeAsync();
     }
 }
