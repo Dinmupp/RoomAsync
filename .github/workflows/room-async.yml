@@ -1,0 +1,43 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build the solution
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Run tests
+      run: dotnet test --no-build --configuration Release
+
+    # - name: Publish the Blazor project
+    #   run: dotnet publish RoomAsync.Web/RoomAsync.Web.Web/RoomAsync.Web.Web.csproj --configuration Release --output ./publish
+
+    # - name: Zip the published output
+    #   run: zip -r publish.zip ./publish
+
+    # - name: Upload artifact
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: blazor-publish-artifact
+    #     path: publish.zip
