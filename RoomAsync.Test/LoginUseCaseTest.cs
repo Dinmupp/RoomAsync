@@ -4,8 +4,9 @@ using Testcontainers.Keycloak;
 
 namespace RoomAsync.Test
 {
-    public class LoginUseCaseTests : IClassFixture<TestFixture>, IAsyncLifetime
+    public class LoginUseCaseTests : IAsyncLifetime, IAsyncDisposable
     {
+        readonly AsyncServiceScope _scope;
         private readonly IUserDriverPort _userDriver;
         private readonly KeycloakContainer _keycloakContainer;
 
@@ -15,6 +16,7 @@ namespace RoomAsync.Test
         /// <param name="testFixture"></param>
         public LoginUseCaseTests(TestFixture testFixture)
         {
+            _scope = testFixture.CreateScopeAsync();
             _keycloakContainer = new KeycloakBuilder()
                 .WithImage("keycloak/keycloak:26.0")
                 .WithExposedPort(8081)
@@ -23,11 +25,14 @@ namespace RoomAsync.Test
                 .WithResourceMapping("./Import/import.json", "/opt/keycloak/data/import")
                 .WithCommand("--import-realm")
                 .Build();
-            _userDriver = testFixture.ServiceProvider.GetRequiredService<IUserDriverPort>();
+            _userDriver = _scope.ServiceProvider.GetRequiredService<IUserDriverPort>();
         }
 
-        public async ValueTask DisposeAsync() =>
+        public async ValueTask DisposeAsync()
+        {
+            await _scope.DisposeAsync();
             await _keycloakContainer.DisposeAsync();
+        }
 
         public async ValueTask InitializeAsync() =>
             await _keycloakContainer.StartAsync();
