@@ -24,7 +24,7 @@ namespace RoomAsync.Web.Web
                 var session = _sessionRepository.FindBySessionId(sessionId);
                 if (session != null && !session.IsExpired())
                 {
-                    _userContext.SetCurrentSession(session);
+                    _userContext.SessionId = session.SessionId;
                 }
             }
 
