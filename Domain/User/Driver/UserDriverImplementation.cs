@@ -1,4 +1,4 @@
-﻿using Domain.User;
+﻿using Domain;
 using Domain.User.Driver;
 using Domain.User.Request;
 using Domain.User.UseCases;
@@ -15,10 +15,10 @@ namespace Application.User
             _loginUseCase = loginUseCase;
         }
 
-        public async Task<IEnumerable<UserEntity>> CreateAsync(CreateUserRequest request, CancellationToken cancellation = default) =>
+        public async Task<Result<CreateUserUseCase.Response.Success, CreateUserUseCase.Response.Fail>> CreateAsync(CreateUserRequest request, CancellationToken cancellation = default) =>
            await _createUserUseCase.Execute(request, cancellation);
 
-        public Task<string> LoginUserAsync(string username, string password, CancellationToken cancellation = default) =>
-            _loginUseCase.ExecuteAsync(username, password, cancellation);
+        public async Task<UserContext> LoginUserAsync(string username, string password, CancellationToken cancellation = default) =>
+            await _loginUseCase.ExecuteAsync(username, password, cancellation);
     }
 }

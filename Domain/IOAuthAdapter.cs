@@ -3,7 +3,7 @@
     public interface IOAuthAdapter
     {
         Task<string> AuthenticateAsync(string username, string password);
-        Task<Session.Session> CreateSessionAsync(string accessToken);
+        Task<UserContext> CreateUserContextAsync(string accessToken, CancellationToken cancellation = default);
     }
 
 }
