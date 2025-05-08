@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using RoomAsync.Test;
-
+using Serilog;
 [assembly: AssemblyFixture(typeof(TestFixture))]
 namespace RoomAsync.Test
 {
@@ -39,6 +39,10 @@ namespace RoomAsync.Test
                 var a = p.GetRequiredService<CreateUserUseCase>();
 
             });
+
+
+            builder.UseSerilog();
+
             _app = builder.Build();
         }
 

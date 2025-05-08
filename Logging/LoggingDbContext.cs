@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Logs;
+using Microsoft.EntityFrameworkCore;
 
 namespace Logging
 {
@@ -24,7 +25,7 @@ namespace Logging
         }
     }
 
-    public class LogEntry
+    public class LogEntry : ILogDataEntity
     {
         public int Id { get; set; }
         public string? Message { get; set; }
