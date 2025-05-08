@@ -22,7 +22,8 @@ namespace Domain.Infrastructure
             var userData = new UserDataEntity
             {
                 Username = user.Username,
-                PasswordHash = user.Password
+                PasswordHash = user.Password,
+                UserId = Guid.NewGuid().ToString(),
             };
             _loggerService.LogInformation($"Adding user: {user.Username}");
             _dbContext.Users.Add(userData);
@@ -42,7 +43,9 @@ namespace Domain.Infrastructure
                     throw new ArgumentNullException("");
                 }
 
-                return dbUser.Select(x => new UserEntity(x));
+                var result = dbUser.Select(x => new UserEntity(x));
+
+                return result;
             }
 
             throw new NotSupportedException("Unsupported specification");

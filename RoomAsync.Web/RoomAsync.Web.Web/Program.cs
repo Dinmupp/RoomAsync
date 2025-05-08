@@ -26,7 +26,7 @@ var connectionString = Configuration.GetConnectionString("DefaultConnection");
 var loggingDb = Configuration.GetConnectionString("LoggingDatabase");
 
 //builder.Services.AddPrometheusExporter(".NET9");
-builder.Services.AddLogger();
+builder.Services.AddLogger(Configuration);
 builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
 builder.Services.AddDatabase(connectionString!, loggingDb!);
