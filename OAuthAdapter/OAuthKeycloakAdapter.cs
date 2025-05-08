@@ -27,10 +27,10 @@ namespace KeyCloakOAuthAdapter
             var content1 = new FormUrlEncodedContent(new[]
             {
                  new KeyValuePair<string, string>("grant_type", "password"),
-                 new KeyValuePair<string, string>("client_id", _config.ClientId),
+                 new KeyValuePair<string, string>("client_id", _config?.ClientId ?? string.Empty),
                  new KeyValuePair<string, string>("username", username),
                  new KeyValuePair<string, string>("password", password),
-                 new KeyValuePair<string, string>("client_secret", _config.ClientSecret),
+                 new KeyValuePair<string, string>("client_secret", _config?.ClientSecret ?? string.Empty),
                  new KeyValuePair<string, string>("scope", "openid")
             });
 

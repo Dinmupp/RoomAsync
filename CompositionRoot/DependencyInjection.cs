@@ -10,7 +10,10 @@ using Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
+using Serilog;
+using Serilog.Sinks.MSSqlServer;
+using System.Collections.ObjectModel;
+using System.Data;
 namespace CompositionRoot
 {
     public static class DependencyInjection
@@ -60,12 +63,57 @@ namespace CompositionRoot
             return services;
         }
 
-        public static IServiceCollection AddLogger(this IServiceCollection services)
+        public static IServiceCollection AddLogger(this IServiceCollection services, IConfiguration configuration)
         {
 #if NET9_0
             services.AddScoped<ILoggerService, LoggerService>();
 #endif
+
+            // Check if Serilog should be used
+            var useSerilog = configuration.GetValue<bool>("Logging:UseSerilog");
+
+            if (useSerilog)
+            {
+                SetUpSerilog(services, configuration);
+            }
+            else
+            {
+                // Use the alternative LoggerService that logs directly to the database
+                services.AddScoped<ILoggerService, LoggerService>();
+            }
             return services;
+        }
+
+        private static void SetUpSerilog(IServiceCollection services, IConfiguration configuration)
+        {
+            var serilogConnectionString = configuration.GetConnectionString("LoggingDatabase");
+            var serilogTableName = configuration.GetValue<string>("Logging:SerilogTableName") ?? "Logs";
+            var sinkOptions = new MSSqlServerSinkOptions
+            {
+                TableName = serilogTableName,
+                AutoCreateSqlTable = true
+            };
+
+            var columnOptions = new ColumnOptions
+            {
+                AdditionalColumns = new Collection<SqlColumn>
+                    {
+                        new SqlColumn { ColumnName = "CorrelationId", DataType = SqlDbType.NVarChar, DataLength = 50 }
+                    }
+            };
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .WriteTo.Console()
+                .WriteTo.MSSqlServer(
+                    connectionString: serilogConnectionString,
+                    sinkOptions: sinkOptions,
+                    columnOptions: columnOptions,
+                    restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information
+                )
+                .CreateLogger();
+            services.AddSingleton(Log.Logger);
+            services.AddScoped<ILoggerService, SerilogLoggerService>();
         }
 
         public static IServiceCollection AddOAuth(this IServiceCollection services, IConfigurationSection oAuthConfig)
