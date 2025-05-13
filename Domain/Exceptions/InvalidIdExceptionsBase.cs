@@ -2,7 +2,7 @@
 {
     public abstract class InvalidIdExceptionBase : RoomAsyncExpection
     {
-        protected InvalidIdExceptionBase(string message) : base(message)
+        protected InvalidIdExceptionBase()
         {
 
         }
@@ -13,7 +13,7 @@
 
     public class InvalidIdException<TValue> : InvalidIdExceptionBase
     {
-        public InvalidIdException(TValue? id) : base($"Id of type {typeof(TValue).Name} with value {id?.ToString() ?? "null"} is invalid!")
+        public InvalidIdException(TValue? id)
             => Id = id;
 
         public TValue? Id { get; init; }

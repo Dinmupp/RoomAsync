@@ -33,10 +33,6 @@ namespace RoomAsync.Test
             {
                 Assert.True(dbUser.Users.First().GetSafe().Length > 0);
             }
-
-            var logs = await _loggerService.GetLogs();
-
-            Assert.True(logs.Count() > 0);
         }
 
         [Fact]

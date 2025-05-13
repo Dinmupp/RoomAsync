@@ -8,7 +8,7 @@ namespace Domain.Exceptions
     /// </summary>
     public class RoomAsyncExpection : ApplicationException
     {
-        protected RoomAsyncExpection(string message) : base(message)
+        protected RoomAsyncExpection()
         {
         }
     }

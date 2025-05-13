@@ -1,6 +1,4 @@
 ﻿using Domain;
-using Domain.Logs;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace Logging
@@ -35,12 +33,6 @@ namespace Logging
         public void SetCorrelationId(string correlationId)
         {
             CorrelationIdContext.Value = correlationId;
-        }
-
-        public async Task<IEnumerable<LogEntity>> GetLogs()
-        {
-            var logs = await _loggingDbContext.Logs.ToListAsync();
-            return logs.Select(log => LogEntity.Create(log));
         }
     }
 }
