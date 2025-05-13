@@ -5,7 +5,7 @@ namespace Domain.User
     public struct UserId : IEquatable<UserId>
     {
         string _value;
-        public readonly string GetUnsafe() => _value;
+        public readonly string GetMaybe() => _value;
         public readonly bool NoValue => string.IsNullOrEmpty(_value);
         public readonly bool HasValue => !NoValue;
 

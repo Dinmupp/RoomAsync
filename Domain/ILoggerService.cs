@@ -1,6 +1,4 @@
-﻿using Domain.Logs;
-
-namespace Domain
+﻿namespace Domain
 {
     public interface ILoggerService
     {
@@ -11,7 +9,5 @@ namespace Domain
         string GetCorrelationId();
 
         void SetCorrelationId(string correlationId);
-
-        Task<IEnumerable<LogEntity>> GetLogs();
     }
 }
