@@ -24,7 +24,6 @@ namespace CompositionRoot
 
             services.AddScoped<CreateUserUseCase>();
 
-
             services.AddSingleton<UserContext>();
             return services;
         }

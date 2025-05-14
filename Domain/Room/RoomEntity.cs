@@ -1,6 +1,4 @@
-﻿using Domain.Exceptions;
-
-namespace Domain.Room
+﻿namespace Domain.Room
 {
     public enum RoomType
     {
@@ -25,14 +23,14 @@ namespace Domain.Room
     }
     public class RoomEntity : IDataEntityExposer<IRoomDataEntity>, IAggregateRoot
     {
-        public RoomId RoomId => _data.RoomId ?? string.Empty;
+        public RoomId RoomId => _data.RoomId;
         public int FloorLevel => _data.FloorLevel;
         public int RoomNumber => _data.RoomNumber;
-        public string Section => _data.Section ?? string.Empty;
+        public string Section => _data.Section;
         public RoomStatus Status => _data.Status;
-        public string RoomName => _data.RoomName ?? string.Empty;
-        public string RoomDescription => _data.RoomDescription ?? string.Empty;
-        public RoomType RoomType => _data.RoomType ?? string.Empty;
+        public string RoomName => _data.RoomName;
+        public string RoomDescription => _data.RoomDescription;
+        public RoomType RoomType => _data.RoomType;
         private readonly IRoomDataEntity _data;
         public RoomEntity(IRoomDataEntity data)
         {
@@ -44,25 +42,16 @@ namespace Domain.Room
     public struct RoomId : IEquatable<RoomId>
     {
         string _value;
-        public readonly string GetUnsafe() => _value;
+
+        public RoomId(string value)
+        {
+            _value = value;
+        }
+
+        public readonly string Value => _value;
         public readonly bool NoValue => string.IsNullOrEmpty(_value);
         public readonly bool HasValue => !NoValue;
 
-        /// <summary>
-        /// Returns primitive value. Throws if value is not valid
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="InvalidIdException{RoomId}"></exception>
-        public readonly string GetSafe()
-            => HasValue
-                ? _value
-                : throw new InvalidIdException<RoomId>(_value);
-
-        public readonly bool TryGet(out string value)
-        {
-            value = _value;
-            return HasValue;
-        }
         public override readonly int GetHashCode()
             => _value.GetHashCode();
 
