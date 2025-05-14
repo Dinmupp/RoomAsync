@@ -1,44 +1,39 @@
-﻿using Domain.Exceptions;
-using Domain.Room;
+﻿using Domain.Room;
 
 namespace Domain.Reservation
 {
     public class ReservationEntity : IDataEntityExposer<IReservationDataEntity>, IAggregateRoot
     {
+        private readonly IReservationDataEntity _data;
+        public ReservationEntity(IReservationDataEntity data)
+        {
+            _data = data;
+        }
 
-        public ReservationId ReservationId => _data.ReservationId ?? string.Empty;
-        public RoomId RoomId => _data.RoomId ?? string.Empty;
+        public ReservationId ReservationId => _data.ReservationId;
+        public RoomId RoomId => _data.RoomId;
 
         public DateTime StartDate => _data.StartDate;
         public DateTime EndDate => _data.EndDate;
-        public string GuestName => _data.GuestName ?? string.Empty;
-        public string GuestEmail => _data.GuestEmail ?? string.Empty;
-        public string GuestPhone => _data.GuestPhone ?? string.Empty;
+        public string GuestName => _data.GuestName;
+        public string GuestEmail => _data.GuestEmail;
+        public string GuestPhone => _data.GuestPhone;
         TDataEntity IDataEntityExposer<IReservationDataEntity>.GetInstanceAs<TDataEntity>() => (TDataEntity)_data;
     }
 
     public struct ReservationId : IEquatable<ReservationId>
     {
-        string _value;
-        public readonly string GetUnsafe() => _value;
+        public readonly string Value => _value;
+        private string _value;
+
+        public ReservationId(string value)
+        {
+            _value = value;
+        }
+
         public readonly bool NoValue => string.IsNullOrEmpty(_value);
         public readonly bool HasValue => !NoValue;
 
-        /// <summary>
-        /// Returns primitive value. Throws if value is not valid
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="InvalidIdException{ReservationId}"></exception>
-        public readonly string GetSafe()
-            => HasValue
-                ? _value
-                : throw new InvalidIdException<ReservationId>(_value);
-
-        public readonly bool TryGet(out string value)
-        {
-            value = _value;
-            return HasValue;
-        }
         public override readonly int GetHashCode()
             => _value.GetHashCode();
 
@@ -64,8 +59,6 @@ namespace Domain.Reservation
 
             return false;
         }
-
-        public override readonly string ToString() => _value;
 
         public static implicit operator ReservationId(string? value)
             => new() { _value = value ?? string.Empty };
