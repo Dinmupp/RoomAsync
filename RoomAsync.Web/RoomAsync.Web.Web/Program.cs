@@ -28,9 +28,9 @@ var loggingDb = Configuration.GetConnectionString("LoggingDatabase");
 //builder.Services.AddPrometheusExporter(".NET9");
 builder.Services.AddLogger(Configuration);
 builder.Services.AddInfrastructure();
+builder.Services.AddOAuth(Configuration.GetSection("OAuthConfig"));
 builder.Services.AddApplication();
 builder.Services.AddDatabase(connectionString!, loggingDb!);
-//builder.Services.AddOAuth(Configuration.GetSection("OAuthConfig"));
 
 //builder.Services.AddPrometheusExporter(".NET9");
 // Add service defaults & Aspire client integrations.
