@@ -1,6 +1,4 @@
-﻿using Domain.ReservationHolder;
-
-namespace Domain.Guest
+﻿namespace Domain.ReservationHolder
 {
     public class ReservationHolderEntity : IDataEntityExposer<IReservationHolderDataEntity>, IAggregateRoot
     {
