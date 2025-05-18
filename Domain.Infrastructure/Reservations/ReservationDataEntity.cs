@@ -1,7 +1,7 @@
-﻿using Domain.Guest;
-using Domain.Infrastructure.ReservationHolder;
+﻿using Domain.Infrastructure.ReservationHolder;
 using Domain.Infrastructure.Rooms;
 using Domain.Reservation;
+using Domain.ReservationHolder;
 using Domain.Room;
 
 namespace Domain.Infrastructure.Reservations

@@ -1,4 +1,4 @@
-﻿using Domain.Guest;
+﻿using Domain.ReservationHolder;
 using Domain.Room;
 
 namespace Domain.Reservation
