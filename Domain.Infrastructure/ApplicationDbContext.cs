@@ -1,7 +1,8 @@
-﻿using Domain.Reservation;
-using Domain.Room;
+﻿using Domain.Infrastructure.ReservationHolder;
+using Domain.Infrastructure.Reservations;
+using Domain.Infrastructure.Rooms;
+using Domain.Infrastructure.Users;
 using Domain.Session;
-using Domain.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Infrastructure
@@ -13,9 +14,10 @@ namespace Domain.Infrastructure
         public DbSet<UserDataEntity> Users { get; set; }
         public DbSet<RoomDataEntity> Rooms { get; set; }
         public DbSet<ReservationDataEntity> Reservations { get; set; }
-
+        public DbSet<ReservationHolderDataEntity> ReservationHolders { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //Ta bort tror jag 
             modelBuilder.Entity<UserSession>(entity =>
             {
                 entity.ToTable(nameof(UserSessions));
@@ -28,57 +30,12 @@ namespace Domain.Infrastructure
                 entity.Property(e => e.CreatedAt).IsRequired(false);
             });
 
-            modelBuilder.Entity<UserDataEntity>(entity =>
-            {
-                entity.ToTable(nameof(Users));
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.UserId).IsRequired();
-                entity.Property(e => e.Username).HasMaxLength(100).IsRequired();
-                entity.Property(e => e.Roles).IsRequired();
-                entity.Property(e => e.PasswordHash).IsRequired();
-                entity.Property(e => e.Claims).IsRequired(false);
-            });
+            UserModelBuilder.Build(modelBuilder);
 
-            modelBuilder.Entity<ReservationDataEntity>(entity =>
-            {
-                entity.ToTable(nameof(Reservations));
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.ReservationId)
-                    .HasConversion(
-                        v => v.Value,
-                        v => v)
-                    .IsRequired();
-                entity.Property(e => e.RoomId)
-                .HasConversion(
-                        v => v.Value,
-                        v => v)
-                    .IsRequired();
-                entity.Property(e => e.StartDate).IsRequired();
-                entity.Property(e => e.EndDate).IsRequired();
-                entity.Property(e => e.GuestName).HasMaxLength(100).IsRequired();
-                entity.Property(e => e.GuestEmail).HasMaxLength(100).IsRequired();
-                entity.Property(e => e.GuestPhone).HasMaxLength(20).IsRequired(false);
-                entity.HasOne(e => e.Room)
-                    .WithMany()
-                    .HasForeignKey(e => e.RoomId)
-                    .HasPrincipalKey(e => e.RoomId)
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
+            ReservationsModelBuilder.Build(modelBuilder);
 
-            modelBuilder.Entity<RoomDataEntity>(entity =>
-            {
-                entity.ToTable(nameof(Rooms));
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.RoomId).HasConversion(v => v.Value, v => v).IsRequired();
-                entity.HasAlternateKey(e => e.RoomId);
-                entity.Property(e => e.FloorLevel).IsRequired();
-                entity.Property(e => e.RoomNumber).IsRequired();
-                entity.Property(e => e.Section).HasMaxLength(100).IsRequired();
-                entity.Property(e => e.Status).IsRequired();
-                entity.Property(e => e.RoomName).HasMaxLength(100).IsRequired();
-                entity.Property(e => e.RoomDescription).HasMaxLength(500).IsRequired(false);
-                entity.Property(e => e.RoomType).IsRequired();
-            });
+            RoomModelBuilder.Build(modelBuilder);
+            ReservationHolderModelBuilder.Build(modelBuilder);
         }
     }
 
@@ -89,57 +46,7 @@ namespace Domain.Infrastructure
         public string? Username { get; set; }
         public string? Roles { get; set; }
         public string? Claims { get; set; }
-        public DateTime? CreatedAt { get; set; }
-        public DateTime? ExpiresAt { get; set; }
-    }
-
-    public class UserDataEntity : IUserDataEntity
-    {
-        public int Id { get; set; }
-        public string UserId { get; set; } = string.Empty;
-        public string Username { get; set; } = string.Empty;
-        public string PasswordHash { get; set; } = string.Empty;
-        public string Roles { get; set; } = string.Empty;
-        public string Claims { get; set; } = string.Empty;
-    }
-
-    public class ReservationDataEntity : IReservationDataEntity
-    {
-        public int Id { get; set; }
-        public ReservationId ReservationId { get; set; }
-
-        public RoomId RoomId { get; set; }
-
-        public RoomDataEntity Room { get; set; } = new();
-
-        public DateTime StartDate { get; set; }
-
-        public DateTime EndDate { get; set; }
-
-        public string GuestName { get; set; } = string.Empty;
-
-        public string GuestEmail { get; set; } = string.Empty;
-
-        public string GuestPhone { get; set; } = string.Empty;
-    }
-
-    public class RoomDataEntity : IRoomDataEntity
-    {
-        public int Id { get; set; }
-        public RoomId RoomId { get; set; }
-
-        public int FloorLevel { get; set; }
-
-        public int RoomNumber { get; set; }
-
-        public string Section { get; set; } = string.Empty;
-
-        public RoomStatus Status { get; set; }
-
-        public string RoomName { get; set; } = string.Empty;
-
-        public string RoomDescription { get; set; } = string.Empty;
-
-        public RoomType RoomType { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
+        public DateTimeOffset? ExpiresAt { get; set; }
     }
 }

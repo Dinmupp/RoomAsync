@@ -1,4 +1,5 @@
-﻿using Domain.Room;
+﻿using Domain.Guest;
+using Domain.Room;
 
 namespace Domain.Reservation
 {
@@ -13,11 +14,9 @@ namespace Domain.Reservation
         public ReservationId ReservationId => _data.ReservationId;
         public RoomId RoomId => _data.RoomId;
 
-        public DateTime StartDate => _data.StartDate;
-        public DateTime EndDate => _data.EndDate;
-        public string GuestName => _data.GuestName;
-        public string GuestEmail => _data.GuestEmail;
-        public string GuestPhone => _data.GuestPhone;
+        public DateTimeOffset StartDate => _data.StartDate;
+        public DateTimeOffset EndDate => _data.EndDate;
+        public ReservationHolderId ReservationHolderId => _data.ReservationHolderId;
         TDataEntity IDataEntityExposer<IReservationDataEntity>.GetInstanceAs<TDataEntity>() => (TDataEntity)_data;
     }
 
