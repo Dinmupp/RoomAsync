@@ -1,6 +1,4 @@
-﻿using Domain.Guest;
-
-namespace Domain.ReservationHolder
+﻿namespace Domain.ReservationHolder
 {
     public interface IReservationHolderDataEntity
     {

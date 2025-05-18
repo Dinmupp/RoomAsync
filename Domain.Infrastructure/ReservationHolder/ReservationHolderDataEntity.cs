@@ -1,5 +1,4 @@
-﻿using Domain.Guest;
-using Domain.ReservationHolder;
+﻿using Domain.ReservationHolder;
 
 namespace Domain.Infrastructure.ReservationHolder
 {
