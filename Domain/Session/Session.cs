@@ -7,8 +7,8 @@
         public string Username => _data.Username ?? string.Empty;
         public List<string> Roles => _data.Roles?.Split(',').ToList() ?? new List<string>();
         public Dictionary<string, string> Claims { get; } = new Dictionary<string, string>();
-        public DateTime? CreatedAt => _data.CreatedAt;
-        public DateTime? ExpiresAt => _data.ExpiresAt;
+        public DateTimeOffset? CreatedAt => _data.CreatedAt;
+        public DateTimeOffset? ExpiresAt => _data.ExpiresAt;
 
         private readonly IUserSessionDataEntity _data;
         public Session(IUserSessionDataEntity data)

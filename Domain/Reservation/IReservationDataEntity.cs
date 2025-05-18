@@ -1,4 +1,5 @@
-﻿using Domain.Room;
+﻿using Domain.Guest;
+using Domain.Room;
 
 namespace Domain.Reservation
 {
@@ -7,10 +8,8 @@ namespace Domain.Reservation
         public ReservationId ReservationId { get; }
         public RoomId RoomId { get; }
 
-        public DateTime StartDate { get; }
-        public DateTime EndDate { get; }
-        public string GuestName { get; }
-        public string GuestEmail { get; }
-        public string GuestPhone { get; }
+        public DateTimeOffset StartDate { get; }
+        public DateTimeOffset EndDate { get; }
+        public ReservationHolderId ReservationHolderId { get; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Domain.User;
+﻿using Domain.Infrastructure.Users;
+using Domain.User;
 using Domain.User.Driven;
 using Domain.User.Request;
 using Domain.User.Specifications;
