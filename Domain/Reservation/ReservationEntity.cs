@@ -17,6 +17,7 @@ namespace Domain.Reservation
         public DateTimeOffset StartDate => _data.StartDate;
         public DateTimeOffset EndDate => _data.EndDate;
         public ReservationHolderId ReservationHolderId => _data.ReservationHolderId;
+
         TDataEntity IDataEntityExposer<IReservationDataEntity>.GetInstanceAs<TDataEntity>() => (TDataEntity)_data;
     }
 
