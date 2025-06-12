@@ -1,6 +1,11 @@
 ﻿using Application.User;
 using Domain;
 using Domain.Infrastructure;
+using Domain.Infrastructure.Reservations;
+using Domain.Infrastructure.Users;
+using Domain.Reservation.Driven;
+using Domain.Reservation.Driver;
+using Domain.Reservation.UseCases;
 using Domain.Session.Driven;
 using Domain.User.Driven;
 using Domain.User.Driver;
@@ -8,6 +13,7 @@ using Domain.User.UseCases;
 using KeyCloakOAuthAdapter;
 using Logging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -20,9 +26,13 @@ namespace CompositionRoot
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddScoped<IUserDriverPort, UserDriverImplementation>();
+            services.AddTransient<IUserDriverPort, UserDriverImplementation>();
 
-            services.AddScoped<CreateUserUseCase>();
+            services.AddTransient<CreateUserUseCase>();
+
+            services.AddTransient<IReservationDriverPort, ReservationDriverImplementation>();
+
+            services.AddTransient<CreateReservationUseCase>();
 
             services.AddSingleton<UserContext>();
             return services;
@@ -45,7 +55,9 @@ namespace CompositionRoot
         {
 #if NET9_0
             services.AddDbContext<ApplicationDbContext>(options =>
-                                options.UseInMemoryDatabase("InMemoryDb"));
+                                options.UseInMemoryDatabase("InMemoryDb")
+                                .ConfigureWarnings(warnings => warnings.Ignore(InMemoryEventId.TransactionIgnoredWarning)));
+
 
             services.AddDbContext<LoggingDbContext>(options =>
                 options.UseInMemoryDatabase("LoggingInMemoryDb"));
@@ -56,8 +68,9 @@ namespace CompositionRoot
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
 #if NET9_0
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<ISessionRepository, SessionRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<ISessionRepository, SessionRepository>();
+            services.AddTransient<IReservationRepository, ReservationRepository>();
 #endif
             return services;
         }

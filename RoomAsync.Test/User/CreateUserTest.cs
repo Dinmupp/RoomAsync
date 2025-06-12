@@ -1,7 +1,7 @@
 ﻿using Domain;
 using Domain.User.UseCases;
 
-namespace RoomAsync.Test
+namespace RoomAsync.Test.User
 {
     public class CreateUserTest : BaseTest
     {

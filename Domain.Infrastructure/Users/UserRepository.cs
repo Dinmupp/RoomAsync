@@ -1,11 +1,10 @@
-﻿using Domain.Infrastructure.Users;
-using Domain.User;
+﻿using Domain.User;
 using Domain.User.Driven;
 using Domain.User.Request;
 using Domain.User.Specifications;
 using Microsoft.EntityFrameworkCore;
 
-namespace Domain.Infrastructure
+namespace Domain.Infrastructure.Users
 {
     public class UserRepository : IUserRepository
     {
