@@ -2,10 +2,13 @@
 using Domain;
 using Domain.Infrastructure;
 using Domain.Infrastructure.Reservations;
+using Domain.Infrastructure.Rooms;
 using Domain.Infrastructure.Users;
 using Domain.Reservation.Driven;
 using Domain.Reservation.Driver;
 using Domain.Reservation.UseCases;
+using Domain.Room.Driven;
+using Domain.Room.UseCase;
 using Domain.Session.Driven;
 using Domain.User.Driven;
 using Domain.User.Driver;
@@ -16,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Serilog;
 using Serilog.Sinks.MSSqlServer;
 using System.Collections.ObjectModel;
@@ -26,13 +30,15 @@ namespace CompositionRoot
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddTransient<IUserDriverPort, UserDriverImplementation>();
+            services.TryAddTransient<IUserDriverPort, UserDriverImplementation>();
 
-            services.AddTransient<CreateUserUseCase>();
+            services.TryAddTransient<CreateUserUseCase>();
 
-            services.AddTransient<IReservationDriverPort, ReservationDriverImplementation>();
+            services.TryAddTransient<IReservationDriverPort, ReservationDriverImplementation>();
 
-            services.AddTransient<CreateReservationUseCase>();
+            services.TryAddTransient<CreateReservationUseCase>();
+
+            services.TryAddTransient<FindAvailableRoomsUseCase>();
 
             services.AddSingleton<UserContext>();
             return services;
@@ -68,9 +74,10 @@ namespace CompositionRoot
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
 #if NET9_0
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<ISessionRepository, SessionRepository>();
-            services.AddTransient<IReservationRepository, ReservationRepository>();
+            services.TryAddTransient<IUserRepository, UserRepository>();
+            services.TryAddTransient<ISessionRepository, SessionRepository>();
+            services.TryAddTransient<IReservationRepository, ReservationRepository>();
+            services.TryAddTransient<IRoomRepository, RoomRepository>();
 #endif
             return services;
         }

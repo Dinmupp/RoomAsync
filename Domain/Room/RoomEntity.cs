@@ -32,9 +32,18 @@
         public string RoomDescription => _data.RoomDescription;
         public RoomType RoomType => _data.RoomType;
         private readonly IRoomDataEntity _data;
-        public RoomEntity(IRoomDataEntity data)
+        private RoomEntity(IRoomDataEntity data)
         {
             _data = data;
+        }
+
+        public static RoomEntity Create(IRoomDataEntity data)
+        {
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data), "Room data entity cannot be null.");
+            }
+            return new RoomEntity(data);
         }
         TDataEntity IDataEntityExposer<IRoomDataEntity>.GetInstanceAs<TDataEntity>() => (TDataEntity)_data;
     }

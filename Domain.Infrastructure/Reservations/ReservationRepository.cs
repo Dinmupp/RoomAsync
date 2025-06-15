@@ -1,6 +1,9 @@
-﻿using Domain.Reservation.Driven;
+﻿using Domain.Extensions;
+using Domain.Infrastructure.Rooms;
+using Domain.Reservation.Driven;
 using Domain.Reservation.Request;
 using Domain.Reservation.UseCases;
+using Domain.Room;
 using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Infrastructure.Reservations
@@ -16,7 +19,7 @@ namespace Domain.Infrastructure.Reservations
             _loggerService = loggerService;
         }
 
-        public async Task<Result<CreateReservationUseCase.Response.Success, CreateReservationUseCase.Response.Fail>> AddReservationAsync(CreateReservationRequest request, CancellationToken cancellation = default)
+        public async Task<Result<CreateReservationUseCase.Response.Success, CreateReservationUseCase.Response.Fail>> AddReservationAsync(CreateReservationRequest request, RoomEntity room, CancellationToken cancellation = default)
         {
             using (var transaction = _dbContext.Database.BeginTransaction())
             {
@@ -24,19 +27,12 @@ namespace Domain.Infrastructure.Reservations
                 {
                     var dbReservationHolder = await FindReservationHolder(request, cancellation);
 
-                    var room = await _dbContext.Rooms
-                        .FirstOrDefaultAsync(r => r.RoomType == request.RoomType && r.Status == Room.RoomStatus.Available, cancellation);
-
-                    if (room is null)
-                    {
-                        return new CreateReservationUseCase.Response.Fail.RoomAlreadyReserved();
-                    }
-
+                    var originalRoomDataEntity = room.ExposeDataEntity<IRoomDataEntity>().GetInstanceAs<RoomDataEntity>();
                     var reservation = new ReservationDataEntity
                     {
                         ReservationId = Guid.NewGuid().ToString(),
                         RoomId = room.RoomId,
-                        Room = room,
+                        Room = originalRoomDataEntity,
                         StartDate = request.StartDate,
                         EndDate = request.EndDate,
                         ReservationHolderId = dbReservationHolder.ReservationHolderId,
