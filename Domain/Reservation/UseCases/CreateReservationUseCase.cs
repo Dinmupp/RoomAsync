@@ -1,21 +1,36 @@
 ﻿using Domain.Error;
 using Domain.Reservation.Driven;
 using Domain.Reservation.Request;
+using Domain.Room.UseCase;
 
 namespace Domain.Reservation.UseCases
 {
     public sealed class CreateReservationUseCase
     {
         private readonly IReservationRepository _repository;
-
-        public CreateReservationUseCase(IReservationRepository repository)
+        private readonly FindAvailableRoomsUseCase _findAvailableRoomsUseCase;
+        public CreateReservationUseCase(IReservationRepository repository, FindAvailableRoomsUseCase findAvailableRoomsUseCase)
         {
             _repository = repository;
+            _findAvailableRoomsUseCase = findAvailableRoomsUseCase;
         }
 
         public async Task<Result<Response.Success, Response.Fail>> Execute(CreateReservationRequest request, CancellationToken cancellation = default)
         {
-            var result = await _repository.AddReservationAsync(request, cancellation);
+            var room = await _findAvailableRoomsUseCase.Execute(new Room.Requests.FindAvailableRoomsRequest { RoomType = request.RoomType }, cancellation);
+
+            if (room.TryGetError(out var error))
+            {
+                return error switch
+                {
+                    FindAvailableRoomsUseCase.Response.Fail.NoAvailableRooms => new Response.Fail.RoomAlreadyReserved(),
+                    _ => throw new ArgumentOutOfRangeException(nameof(error), error, null)
+                };
+            }
+
+            room.TryGetValue(out var roomEntity);
+
+            var result = await _repository.AddReservationAsync(request, roomEntity.Rooms.First(), cancellation);
 
             return result;
         }
