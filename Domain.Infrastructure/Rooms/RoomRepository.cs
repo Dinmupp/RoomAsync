@@ -19,7 +19,7 @@ namespace Domain.Infrastructure.Rooms
 
         public async Task<Result<FindAvailableRoomsUseCase.Response.Success, FindAvailableRoomsUseCase.Response.Fail>> Find(ISpecification<RoomEntity> specification, CancellationToken cancellation = default)
         {
-            var result = new List<RoomEntity>();
+            var result = new List<RoomId>();
             if (specification is FindAvailableRoomsSpecification findAvailableRooms)
             {
                 var room = await _dbContext.Rooms
@@ -30,7 +30,7 @@ namespace Domain.Infrastructure.Rooms
                     return new FindAvailableRoomsUseCase.Response.Fail.NoAvailableRooms();
                 }
 
-                result.Add(RoomEntity.Create(room));
+                result.Add(room.RoomId);
 
                 return new FindAvailableRoomsUseCase.Response.Success(result);
             }

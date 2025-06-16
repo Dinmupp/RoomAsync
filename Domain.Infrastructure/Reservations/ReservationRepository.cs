@@ -1,6 +1,4 @@
-﻿using Domain.Extensions;
-using Domain.Infrastructure.Rooms;
-using Domain.Reservation.Driven;
+﻿using Domain.Reservation.Driven;
 using Domain.Reservation.Request;
 using Domain.Reservation.UseCases;
 using Domain.Room;
@@ -19,7 +17,7 @@ namespace Domain.Infrastructure.Reservations
             _loggerService = loggerService;
         }
 
-        public async Task<Result<CreateReservationUseCase.Response.Success, CreateReservationUseCase.Response.Fail>> AddReservationAsync(CreateReservationRequest request, RoomEntity room, CancellationToken cancellation = default)
+        public async Task<Result<CreateReservationUseCase.Response.Success, CreateReservationUseCase.Response.Fail>> AddReservationAsync(CreateReservationRequest request, RoomId room, CancellationToken cancellation = default)
         {
             using (var transaction = _dbContext.Database.BeginTransaction())
             {
@@ -27,16 +25,13 @@ namespace Domain.Infrastructure.Reservations
                 {
                     var dbReservationHolder = await FindReservationHolder(request, cancellation);
 
-                    var originalRoomDataEntity = room.ExposeDataEntity<IRoomDataEntity>().GetInstanceAs<RoomDataEntity>();
                     var reservation = new ReservationDataEntity
                     {
                         ReservationId = Guid.NewGuid().ToString(),
-                        RoomId = room.RoomId,
-                        Room = originalRoomDataEntity,
+                        RoomId = room,
                         StartDate = request.StartDate,
                         EndDate = request.EndDate,
-                        ReservationHolderId = dbReservationHolder.ReservationHolderId,
-                        ReservationHolder = dbReservationHolder
+                        ReservationHolderId = dbReservationHolder.ReservationHolderId
                     };
                     var dbReservation = await _dbContext.Reservations.AddAsync(reservation, cancellation);
                     await _dbContext.SaveChangesAsync(cancellation);

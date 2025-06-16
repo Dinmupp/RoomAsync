@@ -27,16 +27,6 @@ namespace Domain.Infrastructure.Reservations
                         v => v.Value,
                         v => v)
                     .IsRequired();
-                entity.HasOne(e => e.Room)
-                    .WithMany()
-                    .HasForeignKey(e => e.RoomId)
-                    .HasPrincipalKey(e => e.RoomId)
-                    .OnDelete(DeleteBehavior.Cascade);
-                entity.HasOne(e => e.ReservationHolder)
-                    .WithMany()
-                    .HasForeignKey(e => e.ReservationHolderId)
-                    .HasPrincipalKey(e => e.ReservationHolderId)
-                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }
