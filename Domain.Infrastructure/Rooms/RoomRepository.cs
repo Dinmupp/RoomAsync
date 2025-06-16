@@ -23,14 +23,14 @@ namespace Domain.Infrastructure.Rooms
             if (specification is FindAvailableRoomsSpecification findAvailableRooms)
             {
                 var room = await _dbContext.Rooms
-                    .FirstOrDefaultAsync(r => r.RoomType == findAvailableRooms.Type && r.Status == Room.RoomStatus.Available, cancellation);
+                    .Where(r => r.RoomType == findAvailableRooms.Type && r.Status == Room.RoomStatus.Available).ToArrayAsync(cancellation);
 
                 if (room is null)
                 {
                     return new FindAvailableRoomsUseCase.Response.Fail.NoAvailableRooms();
                 }
 
-                result.Add(room.RoomId);
+                result.AddRange(room.Select(x => x.RoomId));
 
                 return new FindAvailableRoomsUseCase.Response.Success(result);
             }
