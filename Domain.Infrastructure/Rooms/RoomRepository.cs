@@ -25,7 +25,7 @@ namespace Domain.Infrastructure.Rooms
                 var room = await _dbContext.Rooms
                     .Where(r => r.RoomType == findAvailableRooms.Type && r.Status == Room.RoomStatus.Available).ToArrayAsync(cancellation);
 
-                if (room is null)
+                if (room is null || !room.Any())
                 {
                     return new FindAvailableRoomsUseCase.Response.Fail.NoAvailableRooms();
                 }
