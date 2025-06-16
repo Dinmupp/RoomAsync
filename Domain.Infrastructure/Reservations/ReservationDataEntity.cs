@@ -1,6 +1,4 @@
-﻿using Domain.Infrastructure.ReservationHolder;
-using Domain.Infrastructure.Rooms;
-using Domain.Reservation;
+﻿using Domain.Reservation;
 using Domain.ReservationHolder;
 using Domain.Room;
 
@@ -13,14 +11,10 @@ namespace Domain.Infrastructure.Reservations
 
         public RoomId RoomId { get; set; }
 
-        public RoomDataEntity Room { get; set; } = new();
-
         public DateTimeOffset StartDate { get; set; }
 
         public DateTimeOffset EndDate { get; set; }
 
         public ReservationHolderId ReservationHolderId { get; set; }
-
-        public ReservationHolderDataEntity ReservationHolder { get; set; } = new();
     }
 }

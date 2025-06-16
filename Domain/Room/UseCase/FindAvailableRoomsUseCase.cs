@@ -30,8 +30,8 @@ namespace Domain.Room.UseCase
 
             public class Success
             {
-                public Success(IEnumerable<RoomEntity> rooms) => Rooms = rooms;
-                public IEnumerable<RoomEntity> Rooms { get; set; }
+                public Success(IEnumerable<RoomId> rooms) => Rooms = rooms;
+                public IEnumerable<RoomId> Rooms { get; set; }
             }
         }
     }
