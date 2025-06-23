@@ -10,9 +10,14 @@
         public string Phone => _data.Phone;
 
         private readonly IReservationHolderDataEntity _data;
-        public ReservationHolderEntity(IReservationHolderDataEntity data)
+        private ReservationHolderEntity(IReservationHolderDataEntity data)
         {
             _data = data;
+        }
+
+        public static ReservationHolderEntity Create(IReservationHolderDataEntity data)
+        {
+            return new ReservationHolderEntity(data);
         }
         TDataEntity IDataEntityExposer<IReservationHolderDataEntity>.GetInstanceAs<TDataEntity>() => (TDataEntity)_data;
     }

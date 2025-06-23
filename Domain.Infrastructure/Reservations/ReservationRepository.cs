@@ -1,8 +1,8 @@
 ﻿using Domain.Reservation.Driven;
 using Domain.Reservation.Request;
 using Domain.Reservation.UseCases;
+using Domain.ReservationHolder;
 using Domain.Room;
-using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Infrastructure.Reservations
 {
@@ -17,21 +17,19 @@ namespace Domain.Infrastructure.Reservations
             _loggerService = loggerService;
         }
 
-        public async Task<Result<CreateReservationUseCase.Response.Success, CreateReservationUseCase.Response.Fail>> AddReservationAsync(CreateReservationRequest request, RoomId room, CancellationToken cancellation = default)
+        public async Task<Result<CreateReservationUseCase.Response.Success, CreateReservationUseCase.Response.Fail>> AddReservationAsync(CreateReservationRequest request, RoomId room, ReservationHolderId reservationHolderId, CancellationToken cancellation = default)
         {
             using (var transaction = _dbContext.Database.BeginTransaction())
             {
                 try
                 {
-                    var dbReservationHolder = await FindReservationHolder(request, cancellation);
-
                     var reservation = new ReservationDataEntity
                     {
                         ReservationId = Guid.NewGuid().ToString(),
                         RoomId = room,
                         StartDate = request.StartDate,
                         EndDate = request.EndDate,
-                        ReservationHolderId = dbReservationHolder.ReservationHolderId
+                        ReservationHolderId = reservationHolderId
                     };
                     var dbReservation = await _dbContext.Reservations.AddAsync(reservation, cancellation);
                     await _dbContext.SaveChangesAsync(cancellation);
@@ -45,32 +43,6 @@ namespace Domain.Infrastructure.Reservations
                     throw;
                 }
             }
-        }
-
-        private async Task<ReservationHolder.ReservationHolderDataEntity> FindReservationHolder(CreateReservationRequest request, CancellationToken cancellation)
-        {
-            var reservationHolderExists = await _dbContext.ReservationHolders
-                    .AnyAsync(rh => rh.Name == request.ReservationHolderName &&
-                     rh.Phone == request.ReservationHolderPhone &&
-                     rh.Email == request.ReservationHolderEmail, cancellation);
-
-            if (!reservationHolderExists)
-            {
-                var result = await _dbContext.ReservationHolders.AddAsync(new ReservationHolder.ReservationHolderDataEntity
-                {
-                    ReservationHolderId = request.ReservationHolderId,
-                    Name = request.ReservationHolderName,
-                    Phone = request.ReservationHolderPhone,
-                    Email = request.ReservationHolderEmail
-                }, cancellation);
-
-                return result.Entity;
-            }
-
-            return await _dbContext.ReservationHolders
-                    .FirstAsync(rh => rh.Name == request.ReservationHolderName &&
-                               rh.Phone == request.ReservationHolderPhone &&
-                               rh.Email == request.ReservationHolderEmail, cancellation);
         }
     }
 }
