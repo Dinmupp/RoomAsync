@@ -1,12 +1,15 @@
 ﻿using Application.User;
 using Domain;
 using Domain.Infrastructure;
+using Domain.Infrastructure.ReservationHolder;
 using Domain.Infrastructure.Reservations;
 using Domain.Infrastructure.Rooms;
 using Domain.Infrastructure.Users;
 using Domain.Reservation.Driven;
 using Domain.Reservation.Driver;
 using Domain.Reservation.UseCases;
+using Domain.ReservationHolder.Driven;
+using Domain.ReservationHolder.UseCase;
 using Domain.Room.Driven;
 using Domain.Room.UseCase;
 using Domain.Session.Driven;
@@ -39,6 +42,8 @@ namespace CompositionRoot
             services.TryAddTransient<CreateReservationUseCase>();
 
             services.TryAddTransient<FindAvailableRoomsUseCase>();
+            services.TryAddTransient<FindReservationHolderUseCase>();
+            services.TryAddTransient<CreateReservationHolderUseCase>();
 
             services.AddSingleton<UserContext>();
             return services;
@@ -78,6 +83,7 @@ namespace CompositionRoot
             services.TryAddTransient<ISessionRepository, SessionRepository>();
             services.TryAddTransient<IReservationRepository, ReservationRepository>();
             services.TryAddTransient<IRoomRepository, RoomRepository>();
+            services.TryAddTransient<IReservationHolderRepository, ReservationHolderRepository>();
 #endif
             return services;
         }
