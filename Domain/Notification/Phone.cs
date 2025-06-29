@@ -16,11 +16,13 @@
         public CountryCode CountryCode { get; }
         public string Number { get; }
 
-        public Phone(CountryCode countryCode, string? number)
+        public Phone(CountryCode? countryCode, string? number)
         {
+            if (countryCode == null || !Enum.IsDefined(typeof(CountryCode), countryCode) || countryCode == CountryCode.None)
+                throw new ArgumentException("Invalid country code.", nameof(countryCode));
             if (string.IsNullOrWhiteSpace(number))
                 throw new ArgumentException("Phone number is required.", nameof(number));
-            CountryCode = countryCode;
+            CountryCode = countryCode.Value;
             Number = number;
         }
 
