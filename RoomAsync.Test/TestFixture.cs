@@ -28,6 +28,7 @@ namespace RoomAsync.Test
                 configuration
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                    .AddUserSecrets<Startup>(optional: true, reloadOnChange: true)
                     .AddEnvironmentVariables();
             });
 
