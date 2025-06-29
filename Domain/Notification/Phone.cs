@@ -15,6 +15,6 @@
             Number = number;
         }
 
-        public override string ToString() => $"+{CountryCode} {Number}";
+        public override string ToString() => $"+{CountryCode}{Number}";
     }
 }

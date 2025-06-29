@@ -17,8 +17,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Domain.Infrastructure\Domain.Infrastructure.csproj" />
     <ProjectReference Include="..\Logging\Logging.csproj" />
+    <ProjectReference Include="..\MailKitAdapter\MailKitAdapter.csproj" />
     <ProjectReference Include="..\OAuthAdapter\KeyCloakOAuthAdapter.csproj" />
     <ProjectReference Include="..\Prometheus.Middleware\Prometheus.Middleware.csproj" />
+    <ProjectReference Include="..\TwilioAdapter\TwilioAdapter.csproj" />
   </ItemGroup>
 
 </Project>
