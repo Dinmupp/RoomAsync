@@ -11,8 +11,8 @@ namespace Domain.Notification.Request
             Body = body;
         }
 
-        public Email Email { get; set; }
-        public string Subject { get; set; } = string.Empty;
-        public string Body { get; set; } = string.Empty;
+        public Email Email { get; }
+        public string Subject { get; }
+        public string Body { get; }
     }
 }
