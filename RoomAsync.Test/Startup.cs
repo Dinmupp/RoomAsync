@@ -30,6 +30,7 @@ namespace RoomAsync.Test
             services.AddApplication();
             services.AddInMemoryDatabase(connectionString!, loggingDb!);
             services.AddOAuth(Configuration.GetSection("OAuthConfig"));
+            services.AddNotification(Configuration);
             services.AddLogger(Configuration);
         }
     }

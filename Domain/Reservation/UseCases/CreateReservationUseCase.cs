@@ -15,6 +15,7 @@ namespace Domain.Reservation.UseCases
         private readonly FindAvailableRoomsUseCase _findAvailableRoomsUseCase;
         private readonly FindReservationHolderUseCase _findReservationHolderUseCase;
         private readonly CreateReservationHolderUseCase _createReservationHolderUseCase;
+
         public CreateReservationUseCase(IReservationRepository repository, FindAvailableRoomsUseCase findAvailableRoomsUseCase, FindReservationHolderUseCase findReservationHolderUseCase, CreateReservationHolderUseCase createReservationHolderUseCase)
         {
             _repository = repository;
