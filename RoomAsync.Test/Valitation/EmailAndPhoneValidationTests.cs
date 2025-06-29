@@ -47,7 +47,7 @@ namespace RoomAsync.Test.Valitation
         [InlineData(CountryCode.US, null)]
         public void Phone_InvalidInputs_ThrowsArgumentException(CountryCode? countryCode, string? number)
         {
-            Assert.Throws<ArgumentException>(() => new Phone(countryCode ?? CountryCode.None, number));
+            Assert.Throws<ArgumentException>(() => new Phone(countryCode, number));
         }
     }
 }
