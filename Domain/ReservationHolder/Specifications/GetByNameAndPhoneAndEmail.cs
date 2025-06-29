@@ -1,17 +1,19 @@
-﻿namespace Domain.ReservationHolder.Specifications
+﻿using Domain.ContactWay;
+
+namespace Domain.ReservationHolder.Specifications
 {
     public class GetByNameAndPhoneAndEmail : Specification<ReservationHolderEntity>
     {
-        private readonly string _email;
-        public string Email => _email;
+        private readonly Email _email;
+        public Email Email => _email;
 
-        private readonly string _phone;
-        public string Phone => _phone;
+        private readonly Phone _phone;
+        public Phone Phone => _phone;
 
         private readonly string _name;
         public string Name => _name;
 
-        public GetByNameAndPhoneAndEmail(string email, string phone, string name)
+        public GetByNameAndPhoneAndEmail(Email email, Phone phone, string name)
         {
             _email = email;
             _phone = phone;
@@ -20,7 +22,7 @@
 
         public override bool IsSatisfiedBy(ReservationHolderEntity reservationHolder)
         {
-            return reservationHolder.Email == _email && reservationHolder.Phone == _phone && reservationHolder.Name == _name;
+            return reservationHolder.Email.Value == _email.Value && reservationHolder.ToString() == _phone.ToString() && reservationHolder.Name == _name;
         }
     }
 }

@@ -26,8 +26,9 @@ namespace Domain.Infrastructure.ReservationHolder
                 {
                     ReservationHolderId = request.ReservationHolderId,
                     Name = request.Name,
-                    Phone = request.Phone,
-                    Email = request.Email
+                    Phone = request.Phone.Number,
+                    CountryCode = request.Phone.CountryCode,
+                    Email = request.Email.Value
                 }, cancellation);
 
                 return new CreateReservationHolderUseCase.Response.Success(result.Entity.ReservationHolderId);
@@ -44,8 +45,8 @@ namespace Domain.Infrastructure.ReservationHolder
             {
                 var reservationHolderExists = await _dbContext.ReservationHolders
                        .AnyAsync(rh => rh.Name == getByNameAndPhoneAndEmail.Name &&
-                        rh.Phone == getByNameAndPhoneAndEmail.Phone &&
-                        rh.Email == getByNameAndPhoneAndEmail.Email, cancellation);
+                        (rh.Phone == getByNameAndPhoneAndEmail.Phone.Number && rh.CountryCode == getByNameAndPhoneAndEmail.Phone.CountryCode) &&
+                        rh.Email == getByNameAndPhoneAndEmail.Email.Value, cancellation);
 
                 if (!reservationHolderExists)
                 {
@@ -54,8 +55,8 @@ namespace Domain.Infrastructure.ReservationHolder
 
                 var result = await _dbContext.ReservationHolders
                    .Where(rh => rh.Name == getByNameAndPhoneAndEmail.Name &&
-                              rh.Phone == getByNameAndPhoneAndEmail.Phone &&
-                              rh.Email == getByNameAndPhoneAndEmail.Email).ToListAsync(cancellation);
+                              (rh.Phone == getByNameAndPhoneAndEmail.Phone.Number && rh.CountryCode == getByNameAndPhoneAndEmail.Phone.CountryCode) &&
+                              rh.Email == getByNameAndPhoneAndEmail.Email.Value).ToListAsync(cancellation);
 
                 return new FindReservationHolderUseCase.Response.Success(result.Select(rh => rh.ReservationHolderId));
             }
