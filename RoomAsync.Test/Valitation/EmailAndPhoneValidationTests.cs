@@ -30,10 +30,10 @@ namespace RoomAsync.Test.Valitation
         }
 
         [Theory]
-        [InlineData("1", "1234567890")]
-        [InlineData("44", "2071234567")]
-        [InlineData("91", "9876543210")]
-        public void Phone_ValidInputs_CreatesPhone(string countryCode, string number)
+        [InlineData(CountryCode.US, "1234567890")]
+        [InlineData(CountryCode.GB, "2071234567")]
+        [InlineData(CountryCode.IND, "9876543210")]
+        public void Phone_ValidInputs_CreatesPhone(CountryCode countryCode, string number)
         {
             var phone = new Phone(countryCode, number);
             Assert.Equal(countryCode, phone.CountryCode);
@@ -41,13 +41,13 @@ namespace RoomAsync.Test.Valitation
         }
 
         [Theory]
-        [InlineData("", "1234567890")]
+        [InlineData(CountryCode.None, "1234567890")]
         [InlineData(null, "1234567890")]
-        [InlineData("1", "")]
-        [InlineData("1", null)]
-        public void Phone_InvalidInputs_ThrowsArgumentException(string? countryCode, string? number)
+        [InlineData(CountryCode.US, "")]
+        [InlineData(CountryCode.US, null)]
+        public void Phone_InvalidInputs_ThrowsArgumentException(CountryCode? countryCode, string? number)
         {
-            Assert.Throws<ArgumentException>(() => new Phone(countryCode, number));
+            Assert.Throws<ArgumentException>(() => new Phone(countryCode ?? CountryCode.None, number));
         }
     }
 }

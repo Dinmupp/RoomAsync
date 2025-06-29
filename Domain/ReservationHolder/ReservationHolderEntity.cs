@@ -9,7 +9,7 @@ namespace Domain.ReservationHolder
 
         public Email Email => new Email(_data.Email);
 
-        public Phone Phone => new Phone(_data.CountryCode, _data.Phone);
+        public Phone Phone => new Phone(Phone.ParseCountryCode(_data.CountryCode), _data.Phone);
 
         private readonly IReservationHolderDataEntity _data;
         private ReservationHolderEntity(IReservationHolderDataEntity data)
