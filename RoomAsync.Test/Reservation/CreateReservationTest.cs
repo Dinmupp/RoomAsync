@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.ContactWay;
 using Domain.Reservation.Driver;
 
 namespace RoomAsync.Test.Reservation
@@ -32,8 +33,8 @@ namespace RoomAsync.Test.Reservation
                 RoomType = Domain.Room.RoomType.Standard,
                 StartDate = DateTime.UtcNow.AddDays(1),
                 EndDate = DateTime.UtcNow.AddDays(2),
-                ReservationHolderEmail = "Test@gmail.com",
-                ReservationHolderPhone = "0730859054",
+                ReservationHolderEmail = new Email("Test@gmail.com"),
+                ReservationHolderPhone = new Phone("+46", "730859054"),
                 ReservationHolderId = "8209163974"
             }, CancellationToken.None);
 
@@ -61,8 +62,8 @@ namespace RoomAsync.Test.Reservation
                 RoomType = Domain.Room.RoomType.Deluxe,
                 StartDate = DateTime.UtcNow.AddDays(1),
                 EndDate = DateTime.UtcNow.AddDays(2),
-                ReservationHolderEmail = "Test@gmail.com",
-                ReservationHolderPhone = "0730859054",
+                ReservationHolderEmail = new Email("Test@gmail.com"),
+                ReservationHolderPhone = new Phone("+46", "730859054"),
                 ReservationHolderId = "8209163974"
             }, CancellationToken.None);
 

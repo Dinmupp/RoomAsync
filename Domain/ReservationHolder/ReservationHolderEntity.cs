@@ -1,13 +1,15 @@
-﻿namespace Domain.ReservationHolder
+﻿using Domain.ContactWay;
+
+namespace Domain.ReservationHolder
 {
     public class ReservationHolderEntity : IDataEntityExposer<IReservationHolderDataEntity>, IAggregateRoot
     {
         public ReservationHolderId ReservationHolderId => _data.ReservationHolderId;
         public string Name => _data.Name;
 
-        public string Email => _data.Email;
+        public Email Email => new Email(_data.Email);
 
-        public string Phone => _data.Phone;
+        public Phone Phone => new Phone(_data.CountryCode, _data.Phone);
 
         private readonly IReservationHolderDataEntity _data;
         private ReservationHolderEntity(IReservationHolderDataEntity data)
