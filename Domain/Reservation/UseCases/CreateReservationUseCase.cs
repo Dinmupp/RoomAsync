@@ -12,16 +12,18 @@ namespace Domain.Reservation.UseCases
     public sealed class CreateReservationUseCase
     {
         private readonly IReservationRepository _repository;
+        private readonly ICodeGeneratorService _codeGeneratorService;
         private readonly FindAvailableRoomsUseCase _findAvailableRoomsUseCase;
         private readonly FindReservationHolderUseCase _findReservationHolderUseCase;
         private readonly CreateReservationHolderUseCase _createReservationHolderUseCase;
 
-        public CreateReservationUseCase(IReservationRepository repository, FindAvailableRoomsUseCase findAvailableRoomsUseCase, FindReservationHolderUseCase findReservationHolderUseCase, CreateReservationHolderUseCase createReservationHolderUseCase)
+        public CreateReservationUseCase(IReservationRepository repository, FindAvailableRoomsUseCase findAvailableRoomsUseCase, FindReservationHolderUseCase findReservationHolderUseCase, CreateReservationHolderUseCase createReservationHolderUseCase, ICodeGeneratorService codeGeneratorService)
         {
             _repository = repository;
             _findAvailableRoomsUseCase = findAvailableRoomsUseCase;
             _findReservationHolderUseCase = findReservationHolderUseCase;
             _createReservationHolderUseCase = createReservationHolderUseCase;
+            _codeGeneratorService = codeGeneratorService;
         }
 
         public async Task<Result<Response.Success, Response.Fail>> Execute(CreateReservationRequest request, CancellationToken cancellation = default)
@@ -67,7 +69,8 @@ namespace Domain.Reservation.UseCases
                 reservationHolderIdrequest = reservationsHolders.ReservationHolders.First();
             }
 
-            var result = await _repository.AddReservationAsync(request, roomEntity.Rooms.First(), reservationHolderIdrequest, cancellation);
+            var code = await _codeGeneratorService.GenerateUniqueReservationCodeAsync();
+            var result = await _repository.AddReservationAsync(request, code, roomEntity.Rooms.First(), reservationHolderIdrequest, cancellation);
 
             return result;
         }
