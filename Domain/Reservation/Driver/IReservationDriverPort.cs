@@ -6,5 +6,7 @@ namespace Domain.Reservation.Driver
     public interface IReservationDriverPort
     {
         Task<Result<CreateReservationUseCase.Response.Success, CreateReservationUseCase.Response.Fail>> AddReservationAsync(CreateReservationRequest request, CancellationToken cancellation = default);
+
+        Task<ReservationEntity> GetAsync(ReservationId id, CancellationToken cancellation = default);
     }
 }

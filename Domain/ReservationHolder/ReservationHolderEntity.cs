@@ -11,6 +11,9 @@ namespace Domain.ReservationHolder
 
         public Phone Phone => new Phone(Phone.ParseCountryCode(_data.CountryCode), _data.Phone);
 
+        public DateTimeOffset? CheckedInAt => _data.CheckedInAt;
+        public DateTimeOffset? CheckedOutAt => _data.CheckedOutAt;
+
         private readonly IReservationHolderDataEntity _data;
         private ReservationHolderEntity(IReservationHolderDataEntity data)
         {

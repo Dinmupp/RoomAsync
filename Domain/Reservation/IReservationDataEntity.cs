@@ -11,5 +11,8 @@ namespace Domain.Reservation
         public DateTimeOffset StartDate { get; }
         public DateTimeOffset EndDate { get; }
         public ReservationHolderId ReservationHolderId { get; }
+        public string Code { get; }
+        public DateTimeOffset? CheckedOutAt { get; set; }
+        public DateTimeOffset? CheckedInAt { get; set; }
     }
 }
