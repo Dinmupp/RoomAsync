@@ -1,16 +1,42 @@
 ﻿namespace Domain.ContactWay
 {
-    public enum CountryCode
+    public sealed class CountryCode
     {
-        SE = 46,   // Sweden
-        US = 1,    // United States
-        GB = 44,   // United Kingdom
-        DE = 49,   // Germany
-        FR = 33,   // France
-        IND = 91,   // India
-        None = 0,   // No country code
-        // Add more as needed
+        public static readonly CountryCode Sweden = new("SE", 46, "Sweden", "0");
+        public static readonly CountryCode UnitedStates = new("US", 1, "United States", "1");
+        public static readonly CountryCode UnitedKingdom = new("GB", 44, "United Kingdom", "0");
+        public static readonly CountryCode Germany = new("DE", 49, "Germany", "0");
+        public static readonly CountryCode France = new("FR", 33, "France", "0");
+        public static readonly CountryCode India = new("IND", 91, "India", "0");
+        public static readonly CountryCode None = new("None", 0, "None", "");
+
+        public string IsoCode { get; }
+        public int DialCode { get; }
+        public string CountryName { get; }
+        public string TrunkPrefix { get; }
+
+        private CountryCode(string isoCode, int dialCode, string countryName, string trunkPrefix)
+        {
+            IsoCode = isoCode;
+            DialCode = dialCode;
+            CountryName = countryName;
+            TrunkPrefix = trunkPrefix;
+        }
+
+        public static IReadOnlyList<CountryCode> All { get; } = new List<CountryCode>
+        {
+            Sweden, UnitedStates, UnitedKingdom, Germany, France, India
+        };
+
+        public static CountryCode FromDialCode(int dialCode) =>
+            All.FirstOrDefault(c => c.DialCode == dialCode) ?? None;
+
+        public static CountryCode FromIsoCode(string isoCode) =>
+            All.FirstOrDefault(c => c.IsoCode.Equals(isoCode, StringComparison.OrdinalIgnoreCase)) ?? None;
+
+        public override string ToString() => $"+{DialCode} ({CountryName})";
     }
+
     public readonly struct Phone
     {
         public CountryCode CountryCode { get; }
@@ -18,42 +44,26 @@
 
         public Phone(CountryCode? countryCode, string? number)
         {
-            if (countryCode == null || !Enum.IsDefined(typeof(CountryCode), countryCode) || countryCode == CountryCode.None)
+            if (countryCode == null || countryCode == CountryCode.None || !CountryCode.All.Contains(countryCode))
                 throw new ArgumentException("Invalid country code.", nameof(countryCode));
             if (string.IsNullOrWhiteSpace(number))
                 throw new ArgumentException("Phone number is required.", nameof(number));
-            CountryCode = countryCode.Value;
+            CountryCode = countryCode;
             Number = number;
         }
 
         public static CountryCode ParseCountryCode(string? value)
         {
-            CountryCode code;
             if (string.IsNullOrWhiteSpace(value))
                 return CountryCode.None;
 
-            // Try parse as integer (e.g., "46")
             if (int.TryParse(value, out var intCode))
-            {
-                if (Enum.IsDefined(typeof(CountryCode), intCode))
-                {
-                    code = (CountryCode)intCode;
-                    return code;
-                }
-            }
+                return CountryCode.FromDialCode(intCode);
 
-            // Try parse as enum name (e.g., "SE")
-            if (Enum.TryParse<CountryCode>(value, true, out var namedCode))
-            {
-                code = namedCode;
-                return code;
-            }
-
-            return CountryCode.None;
+            return CountryCode.FromIsoCode(value);
         }
 
-
-        public string CountryCodeString => ((int)CountryCode).ToString();
+        public string CountryCodeString => CountryCode.DialCode.ToString();
 
         public override string ToString() => $"+{CountryCodeString} {Number}";
     }

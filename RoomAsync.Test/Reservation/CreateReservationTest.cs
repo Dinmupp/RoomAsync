@@ -43,7 +43,7 @@ namespace RoomAsync.Test.Reservation
                 StartDate = DateTime.UtcNow.AddDays(1),
                 EndDate = DateTime.UtcNow.AddDays(2),
                 ReservationHolderEmail = new Email("Test@gmail.com"),
-                ReservationHolderPhone = new Phone(CountryCode.SE, "730859054"),
+                ReservationHolderPhone = new Phone(CountryCode.Sweden, "730859054"),
                 ReservationHolderId = "8209163974"
             }, CancellationToken.None);
 
@@ -65,7 +65,7 @@ namespace RoomAsync.Test.Reservation
 
             await CreateNewReservation();
             var result = await NotificationDriver.SendSms(new SmsRequest(
-                new Phone(CountryCode.SE, "730859052"),
+                new Phone(CountryCode.Sweden, "730859052"),
                 "Your reservation has been created successfully. - RoomAsync Test")
                 );
 
@@ -117,7 +117,7 @@ namespace RoomAsync.Test.Reservation
                 StartDate = DateTime.UtcNow.AddDays(1),
                 EndDate = DateTime.UtcNow.AddDays(2),
                 ReservationHolderEmail = new Email("Test@gmail.com"),
-                ReservationHolderPhone = new Phone(CountryCode.SE, "730859054"),
+                ReservationHolderPhone = new Phone(CountryCode.Sweden, "730859054"),
                 ReservationHolderId = "8209163974"
             }, CancellationToken.None);
 

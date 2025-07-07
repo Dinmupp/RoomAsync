@@ -29,22 +29,33 @@ namespace RoomAsync.Test.Valitation
             Assert.Throws<ArgumentException>(() => new Email(email));
         }
 
+        public static IEnumerable<object[]> ValidPhoneData =>
+            new List<object[]>
+            {
+                new object[] { CountryCode.UnitedStates, "1234567890" },
+                new object[] { CountryCode.UnitedKingdom, "2071234567" },
+                new object[] { CountryCode.India, "9876543210" }
+            };
+
         [Theory]
-        [InlineData(CountryCode.US, "1234567890")]
-        [InlineData(CountryCode.GB, "2071234567")]
-        [InlineData(CountryCode.IND, "9876543210")]
+        [MemberData(nameof(ValidPhoneData))]
         public void Phone_ValidInputs_CreatesPhone(CountryCode countryCode, string number)
         {
             var phone = new Phone(countryCode, number);
             Assert.Equal(countryCode, phone.CountryCode);
             Assert.Equal(number, phone.Number);
         }
+        public static IEnumerable<object[]> InvalidPhoneData =>
+            new List<object[]>
+            {
+                new object[] { CountryCode.None, "1234567890" },
+                new object[] { null!, "1234567890" },
+                new object[] { CountryCode.UnitedStates, "" },
+                new object[] { CountryCode.UnitedStates, null! }
+            };
 
         [Theory]
-        [InlineData(CountryCode.None, "1234567890")]
-        [InlineData(null, "1234567890")]
-        [InlineData(CountryCode.US, "")]
-        [InlineData(CountryCode.US, null)]
+        [MemberData(nameof(InvalidPhoneData))]
         public void Phone_InvalidInputs_ThrowsArgumentException(CountryCode? countryCode, string? number)
         {
             Assert.Throws<ArgumentException>(() => new Phone(countryCode, number));
