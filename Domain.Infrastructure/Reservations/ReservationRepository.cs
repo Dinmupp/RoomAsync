@@ -1,8 +1,10 @@
-﻿using Domain.Reservation.Driven;
+﻿using Domain.Reservation;
+using Domain.Reservation.Driven;
 using Domain.Reservation.Request;
 using Domain.Reservation.UseCases;
 using Domain.ReservationHolder;
 using Domain.Room;
+using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Infrastructure.Reservations
 {
@@ -17,7 +19,7 @@ namespace Domain.Infrastructure.Reservations
             _loggerService = loggerService;
         }
 
-        public async Task<Result<CreateReservationUseCase.Response.Success, CreateReservationUseCase.Response.Fail>> AddReservationAsync(CreateReservationRequest request, RoomId room, ReservationHolderId reservationHolderId, CancellationToken cancellation = default)
+        public async Task<Result<CreateReservationUseCase.Response.Success, CreateReservationUseCase.Response.Fail>> AddReservationAsync(CreateReservationRequest request, string code, RoomId room, ReservationHolderId reservationHolderId, CancellationToken cancellation = default)
         {
             using (var transaction = _dbContext.Database.BeginTransaction())
             {
@@ -29,7 +31,8 @@ namespace Domain.Infrastructure.Reservations
                         RoomId = room,
                         StartDate = request.StartDate,
                         EndDate = request.EndDate,
-                        ReservationHolderId = reservationHolderId
+                        ReservationHolderId = reservationHolderId,
+                        Code = code
                     };
                     var dbReservation = await _dbContext.Reservations.AddAsync(reservation, cancellation);
                     await _dbContext.SaveChangesAsync(cancellation);
@@ -43,6 +46,19 @@ namespace Domain.Infrastructure.Reservations
                     throw;
                 }
             }
+        }
+
+        public async Task<ReservationEntity> GetAsync(ReservationId id, CancellationToken cancellation = default)
+        {
+            var dbReservation = await _dbContext.Reservations
+                 .FirstOrDefaultAsync(r => r.ReservationId == id, cancellation);
+
+            if (dbReservation is null)
+            {
+                return null!;
+            }
+
+            return new ReservationEntity(dbReservation);
         }
     }
 }

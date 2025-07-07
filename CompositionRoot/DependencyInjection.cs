@@ -1,23 +1,10 @@
-﻿using Application.User;
+﻿using CompositionRoot.Notification;
+using CompositionRoot.Reserveration;
+using CompositionRoot.Room;
+using CompositionRoot.User;
 using Domain;
 using Domain.Infrastructure;
-using Domain.Infrastructure.ReservationHolder;
-using Domain.Infrastructure.Reservations;
-using Domain.Infrastructure.Rooms;
-using Domain.Infrastructure.Users;
 using Domain.Notification;
-using Domain.Notification.Driver;
-using Domain.Notification.UseCase;
-using Domain.Reservation.Driven;
-using Domain.Reservation.Driver;
-using Domain.Reservation.UseCases;
-using Domain.ReservationHolder.Driven;
-using Domain.ReservationHolder.UseCase;
-using Domain.Room.Driven;
-using Domain.Room.UseCase;
-using Domain.Session.Driven;
-using Domain.User.Driven;
-using Domain.User.Driver;
 using Domain.User.UseCases;
 using KeyCloakOAuthAdapter;
 using Logging;
@@ -26,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Serilog;
 using Serilog.Sinks.MSSqlServer;
 using System.Collections.ObjectModel;
@@ -38,26 +24,13 @@ namespace CompositionRoot
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.TryAddTransient<IUserDriverPort, UserDriverImplementation>();
-            services.TryAddTransient<IReservationDriverPort, ReservationDriverImplementation>();
-
-            services.TryAddTransient<INotificationDriverPort, NotificationDriverImplementation>();
-
-            UseCases(services);
+            UserDependency.AddUserDriver(services);
+            ReservationDependency.AddReservationDriver(services);
+            ReservationHolderDependency.AddReservationHolderDriver(services);
+            RoomDependency.AddRoomDriver(services);
 
             services.AddSingleton<UserContext>();
             return services;
-        }
-
-        private static void UseCases(IServiceCollection services)
-        {
-            services.TryAddTransient<CreateReservationUseCase>();
-            services.TryAddTransient<CreateUserUseCase>();
-            services.TryAddTransient<FindAvailableRoomsUseCase>();
-            services.TryAddTransient<FindReservationHolderUseCase>();
-            services.TryAddTransient<CreateReservationHolderUseCase>();
-            services.TryAddTransient<SendSmsUseCase>();
-            services.TryAddTransient<SendEmailUseCase>();
         }
 
         public static IServiceCollection AddDatabase(this IServiceCollection services, string connectionString, string loggingDb)
@@ -90,11 +63,10 @@ namespace CompositionRoot
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
 #if NET9_0
-            services.TryAddTransient<IUserRepository, UserRepository>();
-            services.TryAddTransient<ISessionRepository, SessionRepository>();
-            services.TryAddTransient<IReservationRepository, ReservationRepository>();
-            services.TryAddTransient<IRoomRepository, RoomRepository>();
-            services.TryAddTransient<IReservationHolderRepository, ReservationHolderRepository>();
+            UserDependency.AddUserDriven(services);
+            ReservationDependency.AddReservationDriven(services);
+            ReservationHolderDependency.AddReservationHolderDriven(services);
+            RoomDependency.AddRoomDriven(services);
 #endif
             return services;
         }
@@ -166,6 +138,7 @@ namespace CompositionRoot
 
         public static IServiceCollection AddNotification(this IServiceCollection services, IConfiguration configuration)
         {
+            NotificationDependency.AddNotificationDriver(services);
 #if NET9_0
             var smsProvider = configuration.GetValue<string>("Notification:SmsProvider");
             var emailProvider = configuration.GetValue<string>("Notification:EmailProvider");

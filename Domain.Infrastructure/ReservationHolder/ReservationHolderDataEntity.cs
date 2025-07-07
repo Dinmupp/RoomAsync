@@ -10,5 +10,7 @@ namespace Domain.Infrastructure.ReservationHolder
         public string? Email { get; set; }
         public string? Phone { get; set; }
         public string? CountryCode { get; set; }
+        public DateTimeOffset? CheckedInAt { get; set; }
+        public DateTimeOffset? CheckedOutAt { get; set; }
     }
 }

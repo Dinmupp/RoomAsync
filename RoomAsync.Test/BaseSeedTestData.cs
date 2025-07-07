@@ -1,4 +1,5 @@
-﻿using Domain.Infrastructure;
+﻿using Domain;
+using Domain.Infrastructure;
 using Domain.Infrastructure.Rooms;
 using Domain.Room;
 
@@ -8,6 +9,7 @@ namespace RoomAsync.Test
     {
         protected readonly AsyncServiceScope Scope;
         protected readonly ApplicationDbContext DbContext;
+        protected readonly ICodeGeneratorService codeGeneratorService;
 
         protected BaseSeedTestData(TestFixture testFixture)
         {
@@ -16,6 +18,7 @@ namespace RoomAsync.Test
 
             // Resolve the UserDriverPort
             DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            codeGeneratorService = Scope.ServiceProvider.GetRequiredService<ICodeGeneratorService>();
         }
 
         public async ValueTask DisposeAsync()
