@@ -2,7 +2,7 @@
 
 namespace Domain.Infrastructure.ReservationHolder
 {
-    public class ReservationHolderDataEntity : IReservationHolderDataEntity
+    public class ReservationHolderDataEntity : BaseDataEntity, IReservationHolderDataEntity
     {
         public int Id { get; set; }
         public ReservationHolderId ReservationHolderId { get; set; }

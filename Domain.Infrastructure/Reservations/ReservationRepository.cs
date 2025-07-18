@@ -32,7 +32,8 @@ namespace Domain.Infrastructure.Reservations
                         StartDate = request.StartDate,
                         EndDate = request.EndDate,
                         ReservationHolderId = reservationHolderId,
-                        Code = code.Value
+                        Code = code.Value,
+                        CreatedDate = DateTimeOffset.UtcNow
                     };
                     var dbReservation = await _dbContext.Reservations.AddAsync(reservation, cancellation);
                     await _dbContext.SaveChangesAsync(cancellation);

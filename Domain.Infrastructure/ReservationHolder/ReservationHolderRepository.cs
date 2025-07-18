@@ -28,7 +28,8 @@ namespace Domain.Infrastructure.ReservationHolder
                     Name = request.Name,
                     Phone = request.Phone.Number,
                     CountryCode = request.Phone.CountryCodeString,
-                    Email = request.Email.Value
+                    Email = request.Email.Value,
+                    CreatedDate = DateTimeOffset.UtcNow
                 }, cancellation);
 
                 return new CreateReservationHolderUseCase.Response.Success(result.Entity.ReservationHolderId);
