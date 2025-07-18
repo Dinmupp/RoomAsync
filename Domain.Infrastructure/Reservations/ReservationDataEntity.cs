@@ -4,7 +4,7 @@ using Domain.Room;
 
 namespace Domain.Infrastructure.Reservations
 {
-    public class ReservationDataEntity : IReservationDataEntity
+    public class ReservationDataEntity : BaseDataEntity, IReservationDataEntity
     {
         public int Id { get; set; }
         public ReservationId ReservationId { get; set; }
@@ -17,6 +17,7 @@ namespace Domain.Infrastructure.Reservations
 
         public ReservationHolderId ReservationHolderId { get; set; }
         public string Code { get; set; } = string.Empty;
+        public int? NumberOfGuests { get; set; }
         public DateTimeOffset? CheckedOutAt { get; set; }
         public DateTimeOffset? CheckedInAt { get; set; }
     }
