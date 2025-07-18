@@ -4,8 +4,8 @@ namespace Domain.ReservationHolder.Request
 {
     public class SelfCheckOutRequest
     {
-        public Code Code { get; set; }
-        public SelfCheckOutRequest(Code code)
+        public ReservationCode Code { get; set; }
+        public SelfCheckOutRequest(ReservationCode code)
         {
             Code = code;
         }

@@ -19,7 +19,7 @@ namespace Domain.Infrastructure.Reservations
             _loggerService = loggerService;
         }
 
-        public async Task<Result<CreateReservationUseCase.Response.Success, CreateReservationUseCase.Response.Fail>> AddReservationAsync(CreateReservationRequest request, string code, RoomId room, ReservationHolderId reservationHolderId, CancellationToken cancellation = default)
+        public async Task<Result<CreateReservationUseCase.Response.Success, CreateReservationUseCase.Response.Fail>> AddReservationAsync(CreateReservationRequest request, ReservationCode code, RoomId room, ReservationHolderId reservationHolderId, CancellationToken cancellation = default)
         {
             using (var transaction = _dbContext.Database.BeginTransaction())
             {
@@ -32,7 +32,7 @@ namespace Domain.Infrastructure.Reservations
                         StartDate = request.StartDate,
                         EndDate = request.EndDate,
                         ReservationHolderId = reservationHolderId,
-                        Code = code
+                        Code = code.Value
                     };
                     var dbReservation = await _dbContext.Reservations.AddAsync(reservation, cancellation);
                     await _dbContext.SaveChangesAsync(cancellation);
@@ -51,7 +51,7 @@ namespace Domain.Infrastructure.Reservations
         public async Task<ReservationEntity> GetAsync(ReservationId id, CancellationToken cancellation = default)
         {
             var dbReservation = await _dbContext.Reservations
-                 .FirstOrDefaultAsync(r => r.ReservationId == id, cancellation);
+                 .FirstAsync(r => r.ReservationId == id, cancellation);
 
             if (dbReservation is null)
             {

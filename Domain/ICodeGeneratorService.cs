@@ -1,4 +1,6 @@
-﻿namespace Domain
+﻿using Domain.Reservation;
+
+namespace Domain
 {
     public interface ICodeGeneratorService
     {
@@ -6,6 +8,6 @@
         /// Generates a unique 6-character code for a reservation.
         /// </summary>
         /// <returns>A unique 6-character code.</returns>
-        Task<string> GenerateUniqueReservationCodeAsync(CancellationToken cancellationToken = default);
+        Task<ReservationCode> GenerateUniqueReservationCodeAsync(CancellationToken cancellationToken = default);
     }
 }
