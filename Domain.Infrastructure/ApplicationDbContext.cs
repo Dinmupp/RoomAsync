@@ -1,6 +1,7 @@
 ﻿using Domain.Infrastructure.ReservationHolder;
 using Domain.Infrastructure.Reservations;
 using Domain.Infrastructure.Rooms;
+using Domain.Infrastructure.TableReservations;
 using Domain.Infrastructure.Users;
 using Domain.Session;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ namespace Domain.Infrastructure
         public DbSet<RoomDataEntity> Rooms { get; set; }
         public DbSet<ReservationDataEntity> Reservations { get; set; }
         public DbSet<ReservationHolderDataEntity> ReservationHolders { get; set; }
+        public DbSet<TableReservationDataEntity> TableReservations { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //Ta bort tror jag 
@@ -36,6 +38,7 @@ namespace Domain.Infrastructure
 
             RoomModelBuilder.Build(modelBuilder);
             ReservationHolderModelBuilder.Build(modelBuilder);
+            TableReservationModelBuilder.Build(modelBuilder);
         }
     }
 

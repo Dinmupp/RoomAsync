@@ -1,6 +1,7 @@
 ﻿using CompositionRoot.Notification;
 using CompositionRoot.Reserveration;
 using CompositionRoot.Room;
+using CompositionRoot.TableReservation;
 using CompositionRoot.User;
 using Domain;
 using Domain.Infrastructure;
@@ -28,6 +29,7 @@ namespace CompositionRoot
             ReservationDependency.AddReservationDriver(services);
             ReservationHolderDependency.AddReservationHolderDriver(services);
             RoomDependency.AddRoomDriver(services);
+            TableReservationDependency.AddTableReservationDriver(services);
 
             services.AddSingleton<UserContext>();
             return services;
@@ -67,6 +69,7 @@ namespace CompositionRoot
             ReservationDependency.AddReservationDriven(services);
             ReservationHolderDependency.AddReservationHolderDriven(services);
             RoomDependency.AddRoomDriven(services);
+            TableReservationDependency.AddTableReservationDriven(services);
 #endif
             return services;
         }

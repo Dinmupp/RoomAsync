@@ -10,11 +10,13 @@ namespace Domain.Infrastructure.Users
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly ILoggerService _loggerService;
+        private readonly UserContext _userContext;
 
-        public UserRepository(ApplicationDbContext dbContext, ILoggerService loggerService)
+        public UserRepository(ApplicationDbContext dbContext, ILoggerService loggerService, UserContext userContext)
         {
             _dbContext = dbContext;
             _loggerService = loggerService;
+            _userContext = userContext;
         }
 
         public async Task AddUser(CreateUserRequest user, CancellationToken cancellation = default)
@@ -24,6 +26,9 @@ namespace Domain.Infrastructure.Users
                 Username = user.Username,
                 PasswordHash = user.Password,
                 UserId = Guid.NewGuid().ToString(),
+                CreatedDate = DateTimeOffset.UtcNow,
+                UpdateBy = _userContext.UserId,
+                UpdateDate = DateTimeOffset.UtcNow
             };
             _loggerService.LogInformation($"Adding user: {user.Username}");
             _dbContext.Users.Add(userData);

@@ -2,7 +2,7 @@
 
 namespace Domain.Infrastructure.Rooms
 {
-    public class RoomDataEntity : IRoomDataEntity
+    public class RoomDataEntity : BaseDataEntity, IRoomDataEntity
     {
         public int Id { get; set; }
         public RoomId RoomId { get; set; }

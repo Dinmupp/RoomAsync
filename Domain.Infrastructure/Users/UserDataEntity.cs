@@ -2,7 +2,7 @@
 
 namespace Domain.Infrastructure.Users
 {
-    public class UserDataEntity : IUserDataEntity
+    public class UserDataEntity : BaseDataEntity, IUserDataEntity
     {
         public int Id { get; set; }
         public string UserId { get; set; } = string.Empty;
