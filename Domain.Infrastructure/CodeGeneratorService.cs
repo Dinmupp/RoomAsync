@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Reservation;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 
 namespace Domain.Infrastructure
@@ -13,19 +14,32 @@ namespace Domain.Infrastructure
             _dbContext = dbContext;
         }
 
-        public async Task<string> GenerateUniqueReservationCodeAsync(CancellationToken cancellationToken = default)
+        public async Task<ReservationCode> GenerateUniqueReservationCodeAsync(CancellationToken cancellationToken = default)
         {
-            string code;
-            do
+            // Hämta alla aktiva koder från databasen
+            var usedCodes = await _dbContext.Reservations
+                .Where(r => r.CheckedOutAt == null)
+                .Select(r => r.Code)
+                .ToListAsync(cancellationToken);
+
+            var usedSet = new HashSet<string>(usedCodes);
+
+            const int maxAttempts = 100;
+            Span<char> buffer = stackalloc char[6];
+
+            for (int attempt = 0; attempt < maxAttempts; attempt++)
             {
-                code = new string(Enumerable.Repeat(Chars, 6)
-                    .Select(s => s[RandomNumberGenerator.GetInt32(s.Length)]).ToArray());
+                for (int i = 0; i < 6; i++)
+                {
+                    buffer[i] = Chars[RandomNumberGenerator.GetInt32(Chars.Length)];
+                }
+                var code = new string(buffer);
 
-                // Ensure code is unique among active reservations (not checked out)
-            } while (await _dbContext.Reservations
-                .AnyAsync(r => r.Code == code && r.CheckedOutAt == null, cancellationToken));
+                if (!usedSet.Contains(code))
+                    return new ReservationCode(code);
+            }
 
-            return code;
+            throw new InvalidOperationException("Could not generate a unique reservation code after multiple attempts.");
         }
     }
 }
