@@ -53,12 +53,16 @@ namespace KeyCloakOAuthAdapter
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync(cancellation);
             var userInfo = JsonSerializer.Deserialize<UserInfo>(content) ?? new UserInfo();
-
             // Populate UserContext
             _userContext.UserId = userInfo.Sub;
             _userContext.Username = userInfo.PreferredUsername;
             _userContext.Roles = userInfo.Roles;
             _userContext.SessionId = Guid.NewGuid().ToString();
+            _userContext.Email = userInfo.Email;
+            _userContext.Name = userInfo.Name;
+            _userContext.GivenName = userInfo.GivenName;
+            _userContext.FamilyName = userInfo.FamilyName;
+            _userContext.Token = accessToken;
             _userContext.CreatedAt = DateTime.UtcNow;
             _userContext.ExpiresAt = DateTime.UtcNow.AddHours(1);
             return _userContext;

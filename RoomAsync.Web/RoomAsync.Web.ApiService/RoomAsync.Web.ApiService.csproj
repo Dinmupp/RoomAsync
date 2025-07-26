@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Domain\Domain.csproj" />
     <ProjectReference Include="..\RoomAsync.Web.ServiceDefaults\RoomAsync.Web.ServiceDefaults.csproj" />
   </ItemGroup>
 

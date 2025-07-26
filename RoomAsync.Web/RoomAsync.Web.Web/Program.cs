@@ -1,6 +1,9 @@
 
 using CompositionRoot;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using RoomAsync.Web.ApiService.Authentication;
 using RoomAsync.Web.Web;
+using RoomAsync.Web.Web.Authentication;
 using RoomAsync.Web.Web.Components;
 using Serilog;
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +34,10 @@ builder.Services.AddInfrastructure();
 builder.Services.AddOAuth(Configuration.GetSection("OAuthConfig"));
 builder.Services.AddApplication();
 builder.Services.AddDatabase(connectionString!, loggingDb!);
+
+builder.Services.AddScoped<ProtectedLocalStorage>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<LoginService>();
 
 //builder.Services.AddPrometheusExporter(".NET9");
 // Add service defaults & Aspire client integrations.
@@ -75,6 +82,7 @@ app.MapStaticAssets();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
 
 app.MapDefaultEndpoints();
 
