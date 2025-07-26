@@ -1,7 +1,35 @@
-﻿@page "/"
+﻿@using RoomAsync.Web.Web.Authentication
+
+@page "/"
+
+@inject NavigationManager NavigationManager
+@inject IAuthService AuthService
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+@code {
+    private bool? isLoggedIn = null;
 
-Welcome to your new app.
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            isLoggedIn = await AuthService.IsLoggedInAsync();
+            if (isLoggedIn == false)
+            {
+                NavigationManager.NavigateTo("/login", forceLoad: true);
+            }
+            StateHasChanged();
+        }
+    }
+}
+
+@if (isLoggedIn == true)
+{
+    <h1>Hello, world!</h1>
+    <p>Welcome to your new app.</p>
+}
+else if (isLoggedIn is null)
+{
+    <p>Kontrollerar inloggning...</p>
+}
