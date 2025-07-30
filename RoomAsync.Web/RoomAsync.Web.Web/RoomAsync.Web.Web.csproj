@@ -14,7 +14,14 @@
     <ProjectReference Include="..\RoomAsync.Web.ApiService\RoomAsync.Web.ApiService.csproj" />
     <ProjectReference Include="..\RoomAsync.Web.ServiceDefaults\RoomAsync.Web.ServiceDefaults.csproj" />
   </ItemGroup>
-
+	
+	<ItemGroup>
+		<EmbeddedResource Update="Resources\SharedResources.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>SharedResources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+	
   <ItemGroup>
     <PackageReference Include="Aspire.StackExchange.Redis.OutputCaching" Version="9.3.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.7">
@@ -28,6 +35,14 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="8.2.2" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <Compile Update="Resources\SharedResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SharedResources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>
