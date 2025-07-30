@@ -1,11 +1,11 @@
 ﻿@using RoomAsync.Web.Web.Authentication
+@using RoomAsync.Web.Web.Resources
 
 @page "/"
 
 @inject NavigationManager NavigationManager
 @inject IAuthService AuthService
-
-<PageTitle>Home</PageTitle>
+<PageTitle>@SharedResources.DashboardTitle</PageTitle>
 
 @code {
     private bool? isLoggedIn = null;
@@ -26,8 +26,45 @@
 
 @if (isLoggedIn == true)
 {
-    <h1>Hello, world!</h1>
-    <p>Welcome to your new app.</p>
+@page "/dashboard"
+
+<div class="dashboard">
+    
+    <main class="main-content">
+        <section class="reservations">
+                <h2>@SharedResources.ReservationsTitle</h2>
+            <div class="reservation-count">12</div>
+            <div class="reservation-bar">
+                <div class="confirmed" style="width: 50%;">6 Confirmed</div>
+                <div class="pending" style="width: 25%;">3 Pending</div>
+            </div>
+        </section>
+
+        <section class="recurrences">
+                <h2>@SharedResources.RecurrencesTitle</h2>
+            <div class="recurrence-bar">
+                <div class="bar" style="width: 60%;">6</div>
+                <div class="bar" style="width: 30%;">3</div>
+            </div>
+        </section>
+
+        <section class="recent-reservations">
+                <h2>@SharedResources.RecentReservations</h2>
+            <table>
+                <thead>
+                        <tr><th>@SharedResources.Name</th><th>@SharedResources.Room</th><th>@SharedResources.FromDate</th><th>@SharedResources.ToDate</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>John Smith</td><td>101</td><td>04/08/2024</td><td>04/12/2024</td></tr>
+                    <tr><td>Mary Johnson</td><td>202</td><td>04/09/2024</td><td>04/14/2024</td></tr>
+                    <tr><td>Robert Brown</td><td>305</td><td>04/10/2024</td><td>04/11/2024</td></tr>
+                    <tr><td>Patricia Davis</td><td>402</td><td>04/11/2024</td><td>04/13/2024</td></tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</div>
+
 }
 else if (isLoggedIn is null)
 {

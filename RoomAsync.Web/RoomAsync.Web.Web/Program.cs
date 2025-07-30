@@ -1,11 +1,13 @@
 
 using CompositionRoot;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.AspNetCore.Localization;
 using RoomAsync.Web.ApiService.Authentication;
 using RoomAsync.Web.Web;
 using RoomAsync.Web.Web.Authentication;
 using RoomAsync.Web.Web.Components;
 using Serilog;
+using System.Globalization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Serilog
@@ -56,6 +58,18 @@ builder.Services.AddHttpClient<WeatherApiClient>(client =>
     });
 
 
+
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("sv") };
+    options.DefaultRequestCulture = new RequestCulture("en");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+
+    options.RequestCultureProviders.Insert(0, new AcceptLanguageHeaderRequestCultureProvider());
+});
 
 var app = builder.Build();
 
