@@ -1,11 +1,10 @@
 
 using CompositionRoot;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Localization;
-using RoomAsync.Web.ApiService.Authentication;
 using RoomAsync.Web.Web;
 using RoomAsync.Web.Web.Authentication;
 using RoomAsync.Web.Web.Components;
+using RoomAsync.Web.Web.Login;
 using Serilog;
 using System.Globalization;
 var builder = WebApplication.CreateBuilder(args);
@@ -32,14 +31,11 @@ var loggingDb = Configuration.GetConnectionString("LoggingDatabase");
 
 //builder.Services.AddPrometheusExporter(".NET9");
 builder.Services.AddLogger(Configuration);
-builder.Services.AddInfrastructure();
-builder.Services.AddOAuth(Configuration.GetSection("OAuthConfig"));
-builder.Services.AddApplication();
 builder.Services.AddDatabase(connectionString!, loggingDb!);
 
-builder.Services.AddScoped<ProtectedLocalStorage>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<LoginService>();
+
+builder.Services.AddScoped<UserContextService>();
+
 
 //builder.Services.AddPrometheusExporter(".NET9");
 // Add service defaults & Aspire client integrations.
@@ -57,6 +53,15 @@ builder.Services.AddHttpClient<WeatherApiClient>(client =>
         client.BaseAddress = new("https+http://apiservice");
     });
 
+builder.Services.AddHttpClient<LoginApiClient>(client =>
+{
+    client.BaseAddress = new("https+http://apiservice");
+});
+
+builder.Services.AddHttpClient<AuthApiClient>(client =>
+{
+    client.BaseAddress = new("https+http://apiservice");
+});
 
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -79,13 +84,6 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
-
-//app.UseAuthentication();
-//app.UseAuthorization();
-//app.UseMiddleware<SessionMiddleware>();
-//app.UseMiddleware<CorrelationIdMiddleware.CorrelationIdMiddleware>();
-
 app.UseHttpsRedirection();
 
 app.UseAntiforgery();

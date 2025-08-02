@@ -1,0 +1,22 @@
+﻿@using Domain
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using RoomAsync.Web.Web.Login
+@inject ProtectedSessionStorage SessionStorage
+@inject UserContextService UserContextService
+
+@code {
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var result = await SessionStorage.GetAsync<UserContext>("UserContext");
+            if (result.Success && result.Value != null)
+            {
+                UserContextService.CurrentUser = result.Value;
+            }
+
+            StateHasChanged(); // uppdatera UI om du visar något
+        }
+    }
+}
