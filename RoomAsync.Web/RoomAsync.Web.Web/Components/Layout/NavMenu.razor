@@ -1,6 +1,4 @@
-﻿@inject NavigationManager NavigationManager
-
-<div class="top-row ps-3 navbar navbar-dark">
+﻿<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">RoomAsync.Web</a>
     </div>
@@ -11,43 +9,21 @@
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="nav flex-column">
         <div class="nav-item px-3">
-            <a class="nav-link" @onclick="NavigateToHome">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="bi bi-house-door-fill" aria-hidden="true"></span> Home
-            </a>
+            </NavLink>
         </div>
 
         <div class="nav-item px-3">
-
-
-            <a class="nav-link" @onclick="NavigateToCounter">
-                <span class="bi bi-house-door-fill" aria-hidden="true"></span> Counter
-            </a>
-
+            <NavLink class="nav-link" href="counter">
+                <span class="bi bi-plus-square-fill" aria-hidden="true"></span> Counter
+            </NavLink>
         </div>
 
         <div class="nav-item px-3">
-            <a class="nav-link" @onclick="NavigateToWeather">
+            <NavLink class="nav-link" href="weather">
                 <span class="bi bi-list-nested" aria-hidden="true"></span> Weather
-            </a>
+            </NavLink>
         </div>
     </nav>
 </div>
-
-
-@code {
-    private void NavigateToCounter()
-    {
-        NavigationManager.NavigateTo("/counter");
-    }
-    private void NavigateToWeather()
-    {
-        NavigationManager.NavigateTo("/weather");
-    }
-
-    private void NavigateToHome()
-    {
-        NavigationManager.NavigateTo("/");
-    }
-
-}
-

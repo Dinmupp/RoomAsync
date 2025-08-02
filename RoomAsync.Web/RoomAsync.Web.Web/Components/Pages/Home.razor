@@ -1,31 +1,33 @@
-﻿@using RoomAsync.Web.Web.Authentication
+﻿@rendermode RenderMode.InteractiveServer
+
+
+@using RoomAsync.Web.Web.Authentication
+@using RoomAsync.Web.Web.Login
 @using RoomAsync.Web.Web.Resources
 
 @page "/"
 
 @inject NavigationManager NavigationManager
-@inject IAuthService AuthService
+@inject UserContextService UserContextService 
+@inject AuthApiClient AuthApiClient
 <PageTitle>@SharedResources.DashboardTitle</PageTitle>
 
 @code {
     private bool? isLoggedIn = null;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstrender)
     {
-        if (firstRender)
+        if (firstrender)
         {
-            isLoggedIn = await AuthService.IsLoggedInAsync();
+            isLoggedIn = await UserContextService.IsLoggedIn();
             if (isLoggedIn == false)
             {
                 NavigationManager.NavigateTo("/login", forceLoad: true);
             }
-            StateHasChanged();
-        }
+        }        
     }
 }
 
-@if (isLoggedIn == true)
-{
 @page "/dashboard"
 
 <div class="dashboard">
@@ -64,9 +66,3 @@
         </section>
     </main>
 </div>
-
-}
-else if (isLoggedIn is null)
-{
-    <p>Kontrollerar inloggning...</p>
-}

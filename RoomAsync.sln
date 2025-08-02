@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwilioAdapter", "TwilioAdap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailKitAdapter", "MailKitAdapter\MailKitAdapter.csproj", "{9E707FD5-AABB-45CE-B44E-8400231CC914}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomAsync.Bunit.Tests", "RoomAsync.Bunit.Tests\RoomAsync.Bunit.Tests.csproj", "{CCA00971-CC57-4B30-A533-6B5BA8BABF01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +111,10 @@ Global
 		{9E707FD5-AABB-45CE-B44E-8400231CC914}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E707FD5-AABB-45CE-B44E-8400231CC914}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E707FD5-AABB-45CE-B44E-8400231CC914}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCA00971-CC57-4B30-A533-6B5BA8BABF01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCA00971-CC57-4B30-A533-6B5BA8BABF01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCA00971-CC57-4B30-A533-6B5BA8BABF01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCA00971-CC57-4B30-A533-6B5BA8BABF01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -129,6 +135,7 @@ Global
 		{00017424-30D2-4745-84A2-F8FCA5DBCCB0} = {9383FA18-1F50-4E62-A0D4-A0DFBE935A4E}
 		{BAFCABA1-8317-491A-8D53-77AA09E4A8BA} = {9383FA18-1F50-4E62-A0D4-A0DFBE935A4E}
 		{9E707FD5-AABB-45CE-B44E-8400231CC914} = {9383FA18-1F50-4E62-A0D4-A0DFBE935A4E}
+		{CCA00971-CC57-4B30-A533-6B5BA8BABF01} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {248ACE66-CAAF-4082-92F9-C574B0EDE433}

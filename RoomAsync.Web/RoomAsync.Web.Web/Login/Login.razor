@@ -1,11 +1,16 @@
-﻿@using RoomAsync.Web.ApiService.Authentication;
+﻿@page "/login"
+@rendermode RenderMode.InteractiveServer
+
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using Microsoft.AspNetCore.Components.Web
 @using RoomAsync.Web.Web.Authentication
 @using System.ComponentModel.DataAnnotations
 
-@page "/login"
-@inject LoginService LoginService
+@inject LoginApiClient LoginApiClient
+@inject UserContextService UserContextService
+@inject ProtectedSessionStorage sessionStorage
 @inject NavigationManager NavigationManager
-@inject IAuthService AuthService
 
 
 <PageTitle>Login</PageTitle>
@@ -17,17 +22,18 @@
     <div class="alert alert-danger">@ErrorMessage</div>
 }
 
-<EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+<EditForm Model="loginModel" OnValidSubmit="HandleLogin" FormName="LoginForm">
     <DataAnnotationsValidator />
     <ValidationSummary />
-
     <div class="mb-3">
         <label for="username" class="form-label">Username</label>
-        <InputText id="username" class="form-control" @bind-Value="loginModel.Username" />
+        <InputText id="username" class="form-control" @bind-Value="@loginModel.Username" />
     </div>
     <div class="mb-3">
         <label for="password" class="form-label">Password</label>
-        <InputText id="password" type="password" class="form-control" @bind-Value="loginModel.Password" />
+        <InputText id="password" type="password" class="form-control" @bind-Value="@loginModel.Password" />
+
+
     </div>
     <button type="submit" class="btn btn-primary">Login</button>
 </EditForm>
@@ -42,12 +48,13 @@
     {
         try
         {
-            var useContext = await LoginService.LoginAsync(loginModel.Username, loginModel.Password, AppCancellationToken);
+            var userContext = await LoginApiClient.LoginAsync(loginModel.Username, loginModel.Password, AppCancellationToken);
 
-            if (useContext != null)
+            if (userContext != null)
             {
-                await AuthService.SaveTokenAsync(useContext.Token);
-                NavigationManager.NavigateTo("/");
+                UserContextService.CurrentUser = userContext;
+                await sessionStorage.SetAsync("UserContext", userContext);
+                NavigationManager.NavigateTo("/", forceLoad: true);
             }
             else
             {

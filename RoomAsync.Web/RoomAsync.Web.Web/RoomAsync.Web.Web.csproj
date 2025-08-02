@@ -11,7 +11,6 @@
     <ProjectReference Include="..\..\CompositionRoot\CompositionRoot.csproj" />
     <ProjectReference Include="..\..\CorrelationIdMiddleware\CorrelationIdMiddleware.csproj" />
     <ProjectReference Include="..\..\Domain\Domain.csproj" />
-    <ProjectReference Include="..\RoomAsync.Web.ApiService\RoomAsync.Web.ApiService.csproj" />
     <ProjectReference Include="..\RoomAsync.Web.ServiceDefaults\RoomAsync.Web.ServiceDefaults.csproj" />
   </ItemGroup>
 	
