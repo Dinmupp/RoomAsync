@@ -21,6 +21,9 @@
         {
             return new NotSpecification<T>(this);
         }
+
+        public virtual Task<IReadOnlyList<T>> InvokeOnRepository(CancellationToken cancellation = default)
+            => throw new NotImplementedException("This specification does not implement repository invocation.");
     }
 
     public class AndSpecification<T> : Specification<T>

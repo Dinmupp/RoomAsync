@@ -1,7 +1,6 @@
 ﻿using Domain.Room;
 using Domain.Room.Driven;
 using Domain.Room.Specifications;
-using Domain.Room.UseCase;
 using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Infrastructure.Rooms
@@ -17,9 +16,9 @@ namespace Domain.Infrastructure.Rooms
             _loggerService = loggerService;
         }
 
-        public async Task<Result<FindAvailableRoomsUseCase.Response.Success, FindAvailableRoomsUseCase.Response.Fail>> Find(ISpecification<RoomEntity> specification, CancellationToken cancellation = default)
+        public async Task<IEnumerable<RoomEntity>> Find(ISpecification<RoomEntity> specification, CancellationToken cancellation = default)
         {
-            var result = new List<RoomId>();
+            var result = new List<RoomEntity>();
             if (specification is FindAvailableRoomsSpecification findAvailableRooms)
             {
                 var room = await _dbContext.Rooms
@@ -27,13 +26,32 @@ namespace Domain.Infrastructure.Rooms
 
                 if (room is null || !room.Any())
                 {
-                    return new FindAvailableRoomsUseCase.Response.Fail.NoAvailableRooms();
+                    return new List<RoomEntity>();
                 }
 
-                result.AddRange(room.Select(x => x.RoomId));
+                result.AddRange(room.Select(RoomEntity.Create));
 
-                return new FindAvailableRoomsUseCase.Response.Success(result);
+                return result;
             }
+
+            if (specification is GetAllSpecification getAll)
+            {
+                if (getAll.Skip.HasValue && getAll.Take.HasValue)
+                {
+                    return await _dbContext.Rooms
+                    .OrderBy(r => r.RoomId)
+                    .Skip(getAll.Skip.Value)
+                    .Take(getAll.Take.Value)
+                    .Select(r => RoomEntity.Create(r))
+                    .ToListAsync(cancellation);
+                }
+
+                return await _dbContext.Rooms
+                                   .OrderBy(r => r.RoomId)
+                                   .Select(r => RoomEntity.Create(r))
+                                   .ToListAsync(cancellation);
+            }
+
             throw new NotSupportedException("Unsupported specification for room repository");
         }
     }

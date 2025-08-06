@@ -70,7 +70,7 @@ namespace Domain.Reservation.UseCases
             }
 
             var code = await _codeGeneratorService.GenerateUniqueReservationCodeAsync();
-            var result = await _repository.AddReservationAsync(request, code, roomEntity.Rooms.First(), reservationHolderIdrequest, cancellation);
+            var result = await _repository.AddReservationAsync(request, code, roomEntity.Rooms.First().RoomId, reservationHolderIdrequest, cancellation);
 
             return result;
         }
