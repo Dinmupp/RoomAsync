@@ -1,5 +1,4 @@
 ﻿using Domain.Error;
-using Domain.Room.Driven;
 using Domain.Room.Requests;
 using Domain.Room.Specifications;
 
@@ -7,18 +6,24 @@ namespace Domain.Room.UseCase
 {
     public sealed class FindAvailableRoomsUseCase
     {
-        private readonly IRoomRepository _repository;
+        private readonly RoomSpecificationFactory _roomSpecificationFactory;
 
-        public FindAvailableRoomsUseCase(IRoomRepository repository)
+        public FindAvailableRoomsUseCase(RoomSpecificationFactory roomSpecificationFactory)
         {
-            _repository = repository;
+            _roomSpecificationFactory = roomSpecificationFactory;
         }
 
         public async Task<Result<Response.Success, Response.Fail>> Execute(FindAvailableRoomsRequest request, CancellationToken cancellation = default)
         {
-            var result = await _repository.Find(new FindAvailableRoomsSpecification(request.RoomType), cancellation);
+            var specification = _roomSpecificationFactory.CreateFindAvailableRoomsSpecification(request.RoomType);
+            var result = await specification.InvokeOnRepository(cancellation);
+            if (result is null || !result.Any() || result.Count() == 0)
+            {
+                return new Response.Fail.NoAvailableRooms();
+            }
 
-            return result;
+
+            return new Response.Success(result);
         }
 
         public class Response
@@ -30,8 +35,8 @@ namespace Domain.Room.UseCase
 
             public class Success
             {
-                public Success(IEnumerable<RoomId> rooms) => Rooms = rooms;
-                public IEnumerable<RoomId> Rooms { get; set; }
+                public Success(IEnumerable<RoomEntity> rooms) => Rooms = rooms;
+                public IEnumerable<RoomEntity> Rooms { get; set; }
             }
         }
     }
