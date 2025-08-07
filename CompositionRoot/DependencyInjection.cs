@@ -52,7 +52,7 @@ namespace CompositionRoot
         {
 #if NET9_0
             services.AddDbContext<ApplicationDbContext>(options =>
-                                options.UseInMemoryDatabase("InMemoryDb")
+                                options.UseInMemoryDatabase(Guid.NewGuid().ToString())
                                 .ConfigureWarnings(warnings => warnings.Ignore(InMemoryEventId.TransactionIgnoredWarning)));
 
 

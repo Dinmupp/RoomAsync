@@ -1,14 +1,24 @@
-﻿namespace Domain.Room.Driver
+﻿using Domain.Room.Response;
+
+namespace Domain.Room.Driver
 {
-    public class RoomDriverImplementation
+    public class RoomDriverImplementation : IRoomDriverPort
     {
-        public async Task<IReadOnlyList<RoomEntity>> FindAsync(ISpecification<RoomEntity> specification, CancellationToken cancellation = default)
+        public async Task<GetAllResponse> FindAsync(ISpecification<RoomEntity> specification, CancellationToken cancellation = default)
         {
-            if (specification is Specification<RoomEntity> spec)
+            try
             {
-                return await spec.InvokeOnRepository(cancellation);
+                var result = await specification.InvokeOnRepository(cancellation);
+                return new GetAllResponse
+                {
+                    Rooms = result.items,
+                    TotalCount = result.totalCount
+                };
             }
-            throw new ArgumentException("Unsupported specification type", nameof(specification));
+            catch (Exception)
+            {
+                throw new ArgumentException("Unsupported specification type", nameof(specification));
+            }
         }
     }
 }

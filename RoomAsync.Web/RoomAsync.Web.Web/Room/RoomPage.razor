@@ -1,23 +1,70 @@
 ﻿@page "/rooms"
 @rendermode RenderMode.InteractiveServer
 
+@using Domain.Room
+@using Microsoft.AspNetCore.Components.QuickGrid
 @using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using RoomAsync.Web.Web.Resources
 
-<h3>RoomPage</h3>
+@inject RoomApiClient RoomApiClient
 
-@* TODO 
+<QuickGrid TGridItem="RoomEntity" ItemsProvider="_gridItemsProvider" Virtualize="true" ItemSize="20">
+    <PropertyColumn Property="r => r.RoomNumber" Title="@SharedResources.RoomNumber" IsDefaultSortColumn InitialSortDirection="SortDirection.Ascending" Sortable="true">
+        <ColumnOptions>
+            <div class="search-box">
+                <input type="search" autofocus @bind="_roomsNumberSearch" @bind:event="oninput" placeholder="@SharedResources.SearchOnRoomsNumber" />
+            </div>
+        </ColumnOptions>
+    </PropertyColumn>
 
-Fixa QuickGrid, Kolla inloggad användare. 
 
-Hämta data från API:et och visa rum i en lista (GetAllSpecification).
+    <PropertyColumn Property="r => r.FloorLevel" Title="@SharedResources.Floor" Sortable="true" />
+    <PropertyColumn Property="r => r.Section" Title="@SharedResources.Section" Sortable="true" />
+    <PropertyColumn Property="r => r.RoomName" Title="@SharedResources.Name" Sortable="true" />
+    <PropertyColumn Property="r => r.RoomDescription" Title="@SharedResources.Description" Sortable="true" />
+    <PropertyColumn Property="r => r.Status" Title="@SharedResources.Status" Sortable="true" />
+    <PropertyColumn Property="r => r.RoomType" Title="@SharedResources.Type" Sortable="true" />
+</QuickGrid>
 
-Skapa en RoomModel och visa den i en EditForm. (Lägg till, uppdatera, ta bort rum)
-Kolla inloggad användare och beroende på roll visa olika knappar för att lägga till, uppdatera och ta bort rum.
-styr editerbara fält på Roommodel beroende på roll.
+@code {
+    [CascadingParameter] public CancellationToken AppCancellationToken { get; set; }
+    GridItemsProvider<RoomEntity>? _gridItemsProvider;
+    int numResults;   
+    string _roomsNumberSearch = string.Empty;
 
-Skapa en ViewModel som vid sparande Invokar RoomEntity SaveChangesAsync() och RoomEntity DeleteAsync().
+    protected override async Task OnInitializedAsync()
+    {
+        // Define the GridItemsProvider. Its job is to convert QuickGrid's GridItemsProviderRequest into a query against
+        // an arbitrary data soure. In this example, we need to translate query parameters into the particular URL format
+        // supported by the external JSON API. It's only possible to perform whatever sorting/filtering/etc is supported
+        // by the external API.
+       
+        _gridItemsProvider = async req =>
+        {
+            var request = new GetAllRoomsRequest();
+            request.StartIndex = req.StartIndex;
+            request.Count = req.Count;
+            request.RoomNumber = _roomsNumberSearch;
+            request.SortByAscending = req.GetSortByProperties().First().Direction == SortDirection.Ascending;
+            request.SortBy = req.GetSortByProperties().First().PropertyName;
+            var response = await RoomApiClient.GetAllRooms(request, AppCancellationToken);
+            return GridItemsProviderResult.From<RoomEntity>(
+                response!.Rooms.ToList(),
+                response!.TotalCount);
+        };
 
-*@
+        // Display the number of results just for information. This is completely separate from the grid.
+        var response = await RoomApiClient.GetAllRooms(new GetAllRoomsRequest(), AppCancellationToken);
+        numResults = response.TotalCount;
+    }
+
+    public class RoomResult
+    {
+        public List<RoomEntity> Items { get; set; } = new();
+        public int TotalCount { get; set; }
+    }
+}
 
 @code {
 

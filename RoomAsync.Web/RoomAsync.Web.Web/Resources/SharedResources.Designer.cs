@@ -79,6 +79,24 @@ namespace RoomAsync.Web.Web.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string Description {
+            get {
+                return ResourceManager.GetString("Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Floor.
+        /// </summary>
+        public static string Floor {
+            get {
+                return ResourceManager.GetString("Floor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to From.
         /// </summary>
         public static string FromDate {
@@ -178,6 +196,15 @@ namespace RoomAsync.Web.Web.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Room Number.
+        /// </summary>
+        public static string RoomNumber {
+            get {
+                return ResourceManager.GetString("RoomNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rooms.
         /// </summary>
         public static string RoomsTitle {
@@ -187,11 +214,47 @@ namespace RoomAsync.Web.Web.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rooms number ....
+        /// </summary>
+        public static string SearchOnRoomsNumber {
+            get {
+                return ResourceManager.GetString("SearchOnRoomsNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Section.
+        /// </summary>
+        public static string Section {
+            get {
+                return ResourceManager.GetString("Section", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        public static string Status {
+            get {
+                return ResourceManager.GetString("Status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To.
         /// </summary>
         public static string ToDate {
             get {
                 return ResourceManager.GetString("ToDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string Type {
+            get {
+                return ResourceManager.GetString("Type", resourceCulture);
             }
         }
     }

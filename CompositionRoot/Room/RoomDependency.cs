@@ -1,5 +1,6 @@
 ﻿using Domain.Infrastructure.Rooms;
 using Domain.Room.Driven;
+using Domain.Room.Driver;
 using Domain.Room.Specifications;
 using Domain.Room.UseCase;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,7 @@ namespace CompositionRoot.Room
     {
         public static void AddRoomDriver(IServiceCollection services)
         {
+            services.TryAddTransient<IRoomDriverPort, RoomDriverImplementation>();
             services.TryAddTransient<FindAvailableRoomsUseCase>();
             services.TryAddTransient<RoomSpecificationFactory>();
         }
