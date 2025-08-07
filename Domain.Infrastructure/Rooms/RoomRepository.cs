@@ -38,28 +38,12 @@ namespace Domain.Infrastructure.Rooms
                 return response;
             }
 
-
-
             if (specification is GetAllSpecification getAll)
             {
+
                 var query = _dbContext.Rooms
-                    .ConditionalWhere(!string.IsNullOrWhiteSpace(getAll.RoomNumber), x => x.RoomNumber.ToString().StartsWith(getAll.RoomNumber!));
-
-                if (!string.IsNullOrWhiteSpace(getAll.SortBy))
-                {
-                    var sortExpression = QueryableExtensions.CreateSortExpression<RoomDataEntity>(getAll.SortBy);
-
-                    query = getAll.SortByAscending
-                        ? query.OrderBy(sortExpression)
-                        : query.OrderByDescending(sortExpression);
-                }
-
-                if (getAll.Offset.HasValue && getAll.Offset.Value.End.Value > 0)
-                {
-                    query = query
-                        .Skip(getAll.Offset.Value.Start.Value)
-                        .Take(getAll.Offset.Value.End.Value);
-                }
+                    .ConditionalWhere(!string.IsNullOrWhiteSpace(getAll.RoomNumber), x => x.RoomNumber.ToString().StartsWith(getAll.RoomNumber!))
+                    .ApplySortingAndPaging(getAll.SortBy, getAll.SortByAscending, getAll.Offset);
 
                 result = await query
                     .Select(r => RoomEntity.Create(r))

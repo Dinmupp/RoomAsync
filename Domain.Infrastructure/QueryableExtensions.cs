@@ -13,16 +13,34 @@ namespace Domain.Infrastructure
         }
 
 
-        public static Expression<Func<T, object>> CreateSortExpression<T>(string propertyName)
+        public static IQueryable<T> ApplySortingAndPaging<T>(
+                this IQueryable<T> source,
+                string? sortBy,
+                bool sortAscending,
+                Range? offset)
         {
-            var parameter = Expression.Parameter(typeof(T), "x");
-            var property = Expression.PropertyOrField(parameter, propertyName);
+            if (!string.IsNullOrWhiteSpace(sortBy))
+            {
+                var parameter = Expression.Parameter(typeof(T), "x");
+                var property = Expression.PropertyOrField(parameter, sortBy);
+                var converted = Expression.Convert(property, typeof(object));
+                var sortExpression = Expression.Lambda<Func<T, object>>(converted, parameter);
 
-            // Konvertera till object om det inte redan är det
-            var converted = Expression.Convert(property, typeof(object));
+                source = sortAscending
+                    ? source.OrderBy(sortExpression)
+                    : source.OrderByDescending(sortExpression);
+            }
 
-            return Expression.Lambda<Func<T, object>>(converted, parameter);
+            if (offset?.End.Value > 0)
+            {
+                source = source
+                    .Skip(offset.Value.Start.Value)
+                    .Take(offset.Value.End.Value);
+            }
+
+            return source;
         }
+
 
     }
 }
