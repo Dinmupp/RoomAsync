@@ -11,9 +11,9 @@ namespace Domain.Room.Specifications
             _roomRepository = roomRepository;
         }
 
-        public GetAllSpecification CreateGetAllSpecification(int? skip, int? take)
+        public GetAllSpecification CreateGetAllSpecification(Range? offset, string roomsNumber, string sortBy, bool sortByAscending)
         {
-            return new GetAllSpecification(_roomRepository, skip, take);
+            return new GetAllSpecification(_roomRepository, offset, roomsNumber, sortBy, sortByAscending);
         }
 
         public FindAvailableRoomsSpecification CreateFindAvailableRoomsSpecification(RoomType type)

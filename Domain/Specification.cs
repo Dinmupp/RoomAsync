@@ -22,7 +22,7 @@
             return new NotSpecification<T>(this);
         }
 
-        public virtual Task<IReadOnlyList<T>> InvokeOnRepository(CancellationToken cancellation = default)
+        public virtual Task<(IReadOnlyList<T> items, int totalCount)> InvokeOnRepository(CancellationToken cancellation = default)
             => throw new NotImplementedException("This specification does not implement repository invocation.");
     }
 

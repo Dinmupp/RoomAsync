@@ -17,13 +17,12 @@ namespace Domain.Room.UseCase
         {
             var specification = _roomSpecificationFactory.CreateFindAvailableRoomsSpecification(request.RoomType);
             var result = await specification.InvokeOnRepository(cancellation);
-            if (result is null || !result.Any() || result.Count() == 0)
+            if (result.items?.Count is null or 0)
             {
                 return new Response.Fail.NoAvailableRooms();
             }
 
-
-            return new Response.Success(result);
+            return new Response.Success(result.items);
         }
 
         public class Response

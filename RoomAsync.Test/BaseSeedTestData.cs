@@ -16,7 +16,6 @@ namespace RoomAsync.Test
             // Create a service scope
             Scope = testFixture.CreateScopeAsync();
 
-            // Resolve the UserDriverPort
             DbContext = Scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             codeGeneratorService = Scope.ServiceProvider.GetRequiredService<ICodeGeneratorService>();
         }
@@ -30,15 +29,11 @@ namespace RoomAsync.Test
         {
             // Ensure the database is created
             await DbContext.Database.EnsureCreatedAsync(cancellationToken);
-            // Seed initial data if necessary
-            if (!DbContext.Rooms.Any())
+            DbContext.Rooms.AddRange(new List<RoomDataEntity>
             {
-                DbContext.Rooms.AddRange(new List<RoomDataEntity>
-                {
-                    new RoomDataEntity { RoomId = $"{floorLevel}-{number}",  RoomType = roomType, FloorLevel = floorLevel, RoomName = name, RoomNumber = number, Status = RoomStatus.Available  }
-                });
-                await DbContext.SaveChangesAsync(cancellationToken);
-            }
+                new RoomDataEntity { RoomId = $"{floorLevel}-{number}",  RoomType = roomType, FloorLevel = floorLevel, RoomName = name, RoomNumber = number, Status = RoomStatus.Available  }
+            });
+            await DbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

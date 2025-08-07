@@ -2,6 +2,7 @@
 using Domain.Room.Driven;
 using Domain.Room.Specifications;
 using Microsoft.EntityFrameworkCore;
+using static Domain.Room.Driven.IRoomRepository;
 
 namespace Domain.Infrastructure.Rooms
 {
@@ -16,9 +17,10 @@ namespace Domain.Infrastructure.Rooms
             _loggerService = loggerService;
         }
 
-        public async Task<IEnumerable<RoomEntity>> Find(ISpecification<RoomEntity> specification, CancellationToken cancellation = default)
+        public async Task<RoomResponse> Find(ISpecification<RoomEntity> specification, CancellationToken cancellation = default)
         {
             var result = new List<RoomEntity>();
+            var response = new RoomResponse();
             if (specification is FindAvailableRoomsSpecification findAvailableRooms)
             {
                 var room = await _dbContext.Rooms
@@ -26,31 +28,48 @@ namespace Domain.Infrastructure.Rooms
 
                 if (room is null || !room.Any())
                 {
-                    return new List<RoomEntity>();
+                    return response;
                 }
 
                 result.AddRange(room.Select(RoomEntity.Create));
 
-                return result;
+                response.Rooms = result;
+                response.TotalCount = result.Count;
+                return response;
             }
+
+
 
             if (specification is GetAllSpecification getAll)
             {
-                if (getAll.Skip.HasValue && getAll.Take.HasValue)
+                var query = _dbContext.Rooms
+                    .ConditionalWhere(!string.IsNullOrWhiteSpace(getAll.RoomNumber), x => x.RoomNumber.ToString().StartsWith(getAll.RoomNumber!));
+
+                if (!string.IsNullOrWhiteSpace(getAll.SortBy))
                 {
-                    return await _dbContext.Rooms
-                    .OrderBy(r => r.RoomId)
-                    .Skip(getAll.Skip.Value)
-                    .Take(getAll.Take.Value)
-                    .Select(r => RoomEntity.Create(r))
-                    .ToListAsync(cancellation);
+                    var sortExpression = QueryableExtensions.CreateSortExpression<RoomDataEntity>(getAll.SortBy);
+
+                    query = getAll.SortByAscending
+                        ? query.OrderBy(sortExpression)
+                        : query.OrderByDescending(sortExpression);
                 }
 
-                return await _dbContext.Rooms
-                                   .OrderBy(r => r.RoomId)
-                                   .Select(r => RoomEntity.Create(r))
-                                   .ToListAsync(cancellation);
+                if (getAll.Offset.HasValue && getAll.Offset.Value.End.Value > 0)
+                {
+                    query = query
+                        .Skip(getAll.Offset.Value.Start.Value)
+                        .Take(getAll.Offset.Value.End.Value);
+                }
+
+                result = await query
+                    .Select(r => RoomEntity.Create(r))
+                    .ToListAsync(cancellation);
+
+                response.Rooms = result;
+                response.TotalCount = await _dbContext.Rooms.CountAsync(cancellation);
+                return response;
             }
+
 
             throw new NotSupportedException("Unsupported specification for room repository");
         }

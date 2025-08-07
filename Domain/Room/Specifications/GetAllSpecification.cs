@@ -6,28 +6,38 @@ namespace Domain.Room.Specifications
     {
         private readonly IRoomRepository _repo;
 
-        private readonly int? _skip;
-        private readonly int? _take;
+        private readonly Range? _offset;
 
-        public int? Skip => _skip;
-        public int? Take => _take;
-        public GetAllSpecification(IRoomRepository repo, int? skip, int? take)
+
+        public Range? Offset => _offset;
+
+        private readonly string? _roomNumber;
+        public string? RoomNumber => _roomNumber;
+
+        private string? _sortBy;
+        public string? SortBy => _sortBy;
+
+        private bool _sortByAscending;
+        public bool SortByAscending => _sortByAscending;
+
+        public GetAllSpecification(IRoomRepository repo, Range? offset, string? roomNumber, string? sortBy, bool sortByAscending)
         {
-            _skip = skip;
-            _take = take;
+            _offset = offset;
             _repo = repo;
+            _roomNumber = roomNumber;
+            _sortBy = sortBy;
+            _sortByAscending = sortByAscending;
         }
         public override bool IsSatisfiedBy(RoomEntity room)
         {
             return true; // This specification does not filter by any specific criteria, so it always returns true.
         }
 
-        public override async Task<IReadOnlyList<RoomEntity>> InvokeOnRepository(CancellationToken cancellation = default)
+        public override async Task<(IReadOnlyList<RoomEntity> items, int totalCount)> InvokeOnRepository(CancellationToken cancellation = default)
         {
             var result = await _repo.Find(this, cancellation);
 
-            return result.ToList().AsReadOnly();
+            return (items: result.Rooms, totalCount: result.TotalCount);
         }
-
     }
 }

@@ -162,4 +162,25 @@
   <data name="RecurrencesTitle" xml:space="preserve">
     <value>Återkommande</value>
   </data>
+  <data name="RoomNumber" xml:space="preserve">
+    <value>Rumsnummer</value>
+  </data>
+  <data name="Floor" xml:space="preserve">
+    <value>Våning</value>
+  </data>
+  <data name="Section" xml:space="preserve">
+    <value>Sektion</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Beskrivning</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="SearchOnRoomsNumber" xml:space="preserve">
+    <value>Rumsnummer ...</value>
+  </data>
 </root>

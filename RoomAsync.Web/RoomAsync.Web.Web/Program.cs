@@ -5,6 +5,7 @@ using RoomAsync.Web.Web;
 using RoomAsync.Web.Web.Authentication;
 using RoomAsync.Web.Web.Components;
 using RoomAsync.Web.Web.Login;
+using RoomAsync.Web.Web.Room;
 using Serilog;
 using System.Globalization;
 var builder = WebApplication.CreateBuilder(args);
@@ -63,6 +64,11 @@ builder.Services.AddHttpClient<AuthApiClient>(client =>
     client.BaseAddress = new("https+http://apiservice");
 });
 
+
+builder.Services.AddHttpClient<RoomApiClient>(client =>
+{
+    client.BaseAddress = new("https+http://apiservice");
+});
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 

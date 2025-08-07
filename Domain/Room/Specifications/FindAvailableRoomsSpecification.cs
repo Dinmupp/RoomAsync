@@ -19,11 +19,10 @@ namespace Domain.Room.Specifications
             return room.Status == RoomStatus.Available;
         }
 
-        public override async Task<IReadOnlyList<RoomEntity>> InvokeOnRepository(CancellationToken cancellation = default)
+        public override async Task<(IReadOnlyList<RoomEntity> items, int totalCount)> InvokeOnRepository(CancellationToken cancellation = default)
         {
             var result = await _repository.Find(this, cancellation);
-
-            return result.ToList().AsReadOnly();
+            return (items: result.Rooms, totalCount: result.TotalCount);
         }
     }
 }

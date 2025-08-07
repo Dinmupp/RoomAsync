@@ -3,6 +3,7 @@ using Domain;
 using Microsoft.AspNetCore.Mvc;
 using RoomAsync.Web.ApiService.Authentication;
 using RoomAsync.Web.ApiService.Extensions;
+using RoomAsync.Web.ApiService.Room;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +41,7 @@ builder.Services.AddApplication();
 builder.Services.AddDatabase(connectionString!, loggingDb!);
 
 builder.Services.AddScoped<LoginService>();
+builder.Services.AddScoped<RoomService>();
 
 
 
@@ -105,6 +107,24 @@ app.MapPost("/login", async (
 })
 .WithName("LoginUser");
 
+app.MapPost("/getallrooms", async (
+    HttpContext http,
+    [FromServices] RoomService roomService,
+    [FromBody] GetAllRoomsRequest request,
+    CancellationToken cancellationToken) =>
+{
+    var result = await roomService.GetAllAsync(request, cancellationToken);
+
+    if (result is null)
+    {
+        return Results.Unauthorized();
+    }
+
+    return Results.Ok(result);
+})
+.WithName("GetAllRooms");
+
+
 
 app.MapGet("/me", (HttpContext http) =>
 {
@@ -128,4 +148,13 @@ public class LoginRequest
 {
     public string Username { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
+}
+
+public class GetAllRoomsRequest
+{
+    public string? RoomNumber { get; set; }
+    public int? StartIndex { get; set; }
+    public int? Count { get; set; }
+    public string? SortBy { get; set; }
+    public bool SortByAscending { get; set; }
 }
